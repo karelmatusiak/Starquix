@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { basename, dirname, resolve } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { sqSourcePlugin } from './src/vite-plugin';
+import { i18nPlugin } from './scripts/i18n-plugin.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,7 +36,7 @@ export default defineConfig(({ mode }) => {
     // (504 'Outdated Optimize Dep' → 'Failed to fetch dynamically imported
     // module' in tabs that cached the old ?v=). Key the cache by checkout.
     cacheDir: resolve(__dirname, 'node_modules/.vite', basename(resolve(__dirname, '..'))),
-    plugins: [react(), tailwindcss(), sqSourcePlugin()],
+    plugins: [i18nPlugin(), react(), tailwindcss(), sqSourcePlugin()],
     resolve: {
       alias: {
         '@': resolve(__dirname, './src'),

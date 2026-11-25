@@ -9,6 +9,7 @@
  * </Menu>
  */
 import React from 'react';
+import { tx } from '@/i18n';
 import { Popover, type PopoverProps } from './Popover';
 import { cx } from './cx';
 import { Row } from './Row';
@@ -69,14 +70,14 @@ export function MenuItem({
       onClick={onSelect}
       left={iconSpec ? [iconSpec] : undefined}
       // pr-4: in a fit-content menu the longest label would otherwise touch its shortcut
-      title={<span className={cx(danger && 'text-error', shortcut && 'pr-4') || undefined}>{label}</span>}
-      caption={caption}
+      title={<span className={cx(danger && 'text-error', shortcut && 'pr-4') || undefined}>{typeof label === 'string' ? tx(label) : label}</span>}
+      caption={caption ? tx(caption) : caption}
       rightText={shortcut}
       right={selected && showCheck ? [{ type: 'icon', icon: <CheckIcon /> }] : undefined}
       className={cx('px-3 py-2 text-xs', danger && 'text-error hover:bg-error-subtle', className)}
       rowProps={{
         role: 'menuitem',
-        title,
+        title: tx(title),
         tabIndex: disabled ? -1 : 0,
         'aria-disabled': disabled || undefined,
         onKeyDown: (e) => {

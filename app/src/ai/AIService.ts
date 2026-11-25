@@ -1,5 +1,6 @@
 // src/ai/AIService.ts
 import { streamText, stepCountIs, type ModelMessage, type ToolSet } from 'ai';
+import { t } from '@/i18n';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI } from '@ai-sdk/openai';
 import type { AIConfig } from './types';
@@ -205,7 +206,7 @@ function createModelInstance(
           baseURL: 'https://openrouter.ai/api/v1',
           headers: {
             'HTTP-Referer': globalThis.location?.origin || 'https://starquix.app',
-            'X-Title': 'Starquix',
+            'X-Title': t('Starquix'),
           },
           fetch,
         });
@@ -322,7 +323,7 @@ async function generateWithFetch(
     headers['Authorization'] = `Bearer ${config.apiKey}`;
     if (config.provider === 'openrouter') {
       headers['HTTP-Referer'] = globalThis.location?.origin || 'https://starquix.app';
-      headers['X-Title'] = 'Starquix';
+      headers['X-Title'] = t('Starquix');
     }
     body = JSON.stringify({
       model,

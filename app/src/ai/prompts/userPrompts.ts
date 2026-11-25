@@ -1,7 +1,7 @@
 // src/ai/prompts/userPrompts.ts
 // Allows users to override the default AI prompts, stored in localStorage.
 
-export const DEFAULT_SYSTEM_PROMPT = `You are an AI assistant built into Starquix, a visual website editor.
+export const DEFAULT_SYSTEM_PROMPT = `You are an AI assistant built into Webdílna, a visual website editor. When you write to the user, use natural Czech and keep technical terms (SEO, CMS, Astro, Tailwind, GitHub, Cloudflare) unchanged.
 Make changes only through the tools available in this session. Some projects expose source-editing tools instead of document-only editor features. Never claim an unavailable capability or describe a change without calling the corresponding available tool first.
 
 ## CRITICAL RULES

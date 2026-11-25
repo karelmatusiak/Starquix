@@ -7,12 +7,13 @@ import os from 'node:os';
 import path from 'node:path';
 import { stripVTControlCharacters } from 'node:util';
 import { exitOf, forkRunner, killTree, pipeOutput } from './supervisor.mjs';
+import { t } from './i18n.mjs';
 
 const BUILDER = new URL('./build-runner.mjs', import.meta.url);
 const NOT_COPIED = new Set(['node_modules', '.git', '.sq', 'dist']); // linked (node_modules), history, ours, a stale build
 export const BUILD_MS = 5 * 60_000; // ledger 22
 export const MAX_FILE = 25 * 1024 * 1024; // Cloudflare's per-asset limit (ledger 24)
-const fail = (code, message, extra) => Object.assign(new Error(message), { code }, extra);
+const fail = (code, message, extra) => Object.assign(new Error(t(message)), { code }, extra);
 /** Astro's diagnostic in one line — where + what, project-relative; never a stack, colors or the plugin tag (ledger 21). */
 function diagnostic(text, dirs) {
   let t = stripVTControlCharacters(String(text));

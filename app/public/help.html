@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="cs">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Starquix — help</title>
+  <title>Webdílna — nápověda</title>
   <style>
     :root { color-scheme: light dark; font-family: system-ui, sans-serif; line-height: 1.6; }
     body { max-width: 48rem; margin: auto; padding: 2rem 1.25rem 4rem; }
@@ -13,31 +13,32 @@
 </head>
 <body>
 <main>
-  <h1>Starquix help</h1>
-  <p>Edit real Astro files on your computer. Keep regular ZIP backups.</p>
-  <nav aria-label="Help topics"><a href="#startup">Startup</a> · <a href="#storage">Storage</a> · <a href="#limits">Editing limits</a> · <a href="#ai">AI</a> · <a href="#recovery">Recovery</a></nav>
-  <h2 id="startup">Startup</h2>
-  <p>Starquix runs each project with its own local Astro server. The first open of an imported site may install its packages, which needs the network once.</p>
-  <h2 id="storage">Storage and backups</h2>
-  <p>Projects are saved by the app on this computer. Export a ZIP regularly as your backup. A project made with the older browser version of Starquix comes in the same way: export it as a ZIP there, then Import it here.</p>
-  <p>Every change is stored the moment the editor accepts it. There is no separate save step: reloading, closing the window or a preview restart cannot lose an accepted change. The preview and the project files catch up in the background; export and deployment wait for that to finish.</p>
-  <h2 id="limits">Import and editing limits</h2>
+  <h1>Nápověda Webdílny</h1>
+  <p>Upravujete skutečné soubory Astro na svém počítači. Pravidelně si dělejte zálohu do ZIP.</p>
+  <p>Webdílna vychází z open-source projektu <a href="https://github.com/Mayhopar/Starquix">Starquix</a> (MIT).</p>
+  <nav aria-label="Témata nápovědy"><a href="#startup">Spuštění</a> · <a href="#storage">Úložiště</a> · <a href="#limits">Limity úprav</a> · <a href="#ai">AI</a> · <a href="#recovery">Obnova</a></nav>
+  <h2 id="startup">Spuštění</h2>
+  <p>Webdílna spouští každý projekt vlastním místním serverem Astro. První otevření importovaného webu může nainstalovat jeho balíčky, a to jednou potřebuje síť.</p>
+  <h2 id="storage">Úložiště a zálohy</h2>
+  <p>Projekty ukládá aplikace na tomto počítači. Jako zálohu pravidelně exportujte ZIP. Projekt ze starší prohlížečové verze Starquixu sem dostanete stejně: tam ho exportujte jako ZIP a tady ho importujte.</p>
+  <p>Každá změna se uloží v okamžiku, kdy ji editor přijme. Samostatné ukládání není. Znovunačtení, zavření okna ani restart náhledu přijatou změnu nesmaže. Náhled a soubory projektu se doženou na pozadí; export a publikace na to počkají.</p>
+  <h2 id="limits">Limity importu a úprav</h2>
   <ul>
-    <li>Import an Astro folder, up to 2,000 files / 500 MB. Visual styling works best with Tailwind CSS.</li>
-    <li>Dependency folders, build output and hidden files (including .env) are skipped. Private registries and server-secret-dependent projects may not run.</li>
-    <li>Preserved source, media and fonts can be exported, but not every imported construct is visually editable. Arbitrary Astro integrations are not guaranteed.</li>
-    <li>Public SEO and database/schema/form-binding controls are hidden where their editor state cannot persist.</li>
-    <li>Group moves containing source elements are refused, even within one file. Move one source element at a time, or edit the original source.</li>
-    <li>Unsupported CMS/MDX expressions, imports and component constructs remain read-only. Edit their original source rather than forcing a visual rewrite. Dynamic routes also have source-based editing/deletion limits.</li>
+    <li>Importujte složku Astro, nejvýše 2&nbsp;000 souborů / 500&nbsp;MB. Vizuální úpravy fungují nejlíp s Tailwind CSS.</li>
+    <li>Složky závislostí, výstup sestavení a skryté soubory (včetně .env) se přeskakují. Soukromé registry a projekty závislé na serverovém tajemství nemusí naběhnout.</li>
+    <li>Zachovaný zdroj, média a písma jdou exportovat, ale ne každá importovaná konstrukce je vizuálně upravitelná. Libovolné integrace Astro nejsou zaručené.</li>
+    <li>Veřejné ovládání SEO a databáze, schématu nebo vazby formuláře je skryté tam, kde stav editoru nejde uložit.</li>
+    <li>Přesun skupiny, která obsahuje zdrojové prvky, je odmítnutý i v rámci jednoho souboru. Přesouvejte jeden zdrojový prvek, nebo upravte původní zdroj.</li>
+    <li>Nepodporované výrazy CMS/MDX, importy a konstrukce komponent zůstávají jen ke čtení. Upravte jejich původní zdroj, nenuťte vizuální přepis. Dynamické cesty mají taky limity úprav a mazání ze zdroje.</li>
   </ul>
-  <h2 id="ai">AI and provider charges</h2>
-  <p>AI is optional. Your provider keys are stored locally. Invoking AI sends prompts/context to your selected provider. Provider charges are separate from Starquix; review provider pricing and limits before use. AI follows the same unsupported SEO/database restrictions.</p>
-  <h2 id="recovery">Recover without deleting your work</h2>
-  <p>Accepted changes are already stored, so recovery never has to save anything first. If a change could not be stored, the control you used says so and keeps your input for another try; earlier changes are unaffected.</p>
-  <p>Create/import failures keep existing projects; imports retain selected files for retry. No recovery action automatically deletes app data.</p>
-  <p>“Try again” retries startup or remounts a failed editor. “Reload” is safe: the editor restores your stored changes and resumes writing them to the project files. The preview restarts itself after a transient failure; “Restart preview” is offered only when that did not help.</p>
-  <p>“Download diagnostics” saves JSON locally with only app version, time, coarse platform family, snapshot version and a stable failure category. It excludes project names/IDs, source/files, URLs, raw errors/stacks, local storage contents, keys/tokens and provider responses. Nothing is uploaded automatically.</p>
-  <p><a href="/">Open projects</a></p>
+  <h2 id="ai">AI a poplatky poskytovatele</h2>
+  <p>AI je volitelná. Klíče k poskytovateli jsou uložené lokálně. Volání AI posílá zadání a kontext vybranému poskytovateli. Jeho poplatky jsou oddělené od Webdílny; před použitím si ověřte ceník a limity. Pro AI platí stejná omezení nepodporovaného SEO a databáze.</p>
+  <h2 id="recovery">Obnova bez smazání práce</h2>
+  <p>Přijaté změny už jsou uložené, obnova tedy nemusí nic nejdřív ukládat. Když změnu uložit nešlo, ovládací prvek, který jste použili, to řekne a nechá vstup na další pokus. Dřívější změny to neovlivní.</p>
+  <p>Nezdařené vytvoření nebo import nechá stávající projekty být; import si vybrané soubory nechá na opakování. Žádná obnova automaticky nemaže data aplikace.</p>
+  <p>„Zkusit znovu“ zopakuje spuštění nebo znovu připojí spadlý editor. „Znovu načíst“ je bezpečné: editor obnoví uložené změny a pokračuje v jejich zápisu do souborů projektu. Náhled se po přechodné chybě spustí sám; „Restartovat náhled“ se nabídne, jen když to nepomohlo.</p>
+  <p>„Stáhnout diagnostiku“ uloží JSON lokálně. Obsahuje jen verzi aplikace, čas, hrubou rodinu platformy, verzi snapshotu a stabilní kategorii selhání. Neobsahuje názvy ani ID projektů, zdroj, soubory, URL, surové chyby a stacky, obsah místního úložiště, klíče, tokeny ani odpovědi poskytovatele. Nic se neodesílá samo.</p>
+  <p><a href="/">Otevřít projekty</a></p>
 </main>
 </body>
 </html>

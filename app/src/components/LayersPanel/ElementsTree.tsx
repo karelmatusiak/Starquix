@@ -7,6 +7,7 @@ import { PenPathIcon as SharedPenPathIcon, SlotIcon as SharedSlotIcon } from '@/
  * Supports drag-and-drop reordering at ALL levels (root + children).
  */
 
+import { t } from '@/i18n';
 import { selectOptionsFor } from '@/utils/selectOptions';
 import { useState, useCallback, useEffect, useMemo, useRef, useContext, memo, useSyncExternalStore } from 'react';
 
@@ -1110,8 +1111,8 @@ export function ElementsTree({ baseDepth = 0, viewedComponentFile = null, dynami
   );
 
   const emptyMessage = scannedElements.length === 0 && !localProjectPath
-    ? 'Start preview to see elements'
-    : 'No elements on page';
+    ? t('Start preview to see elements')
+    : t('No elements on page');
 
   // Keys of multi-selection extras for member-row highlighting.
   const multiSelectedKeys = useMemo(

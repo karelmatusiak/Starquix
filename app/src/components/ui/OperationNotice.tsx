@@ -1,3 +1,4 @@
+import { tx } from '@/i18n';
 import { Row } from './Row';
 import { Button } from './Button';
 
@@ -14,12 +15,12 @@ export function OperationNotice({ title, detail, action, links = [], urgency = '
   return <div role={urgency === 'assertive' ? 'alert' : 'status'} aria-live={urgency} aria-atomic="true">
     <Row hover={false} size="sm" className="h-auto min-h-8 py-2 px-2 border border-stroke rounded-inner"
       title={<div className="whitespace-normal break-words font-normal">
-        <div>{title}</div>
-        {detail && <div className="text-xs text-text-secondary mt-1">{detail}</div>}
+        <div>{tx(title)}</div>
+        {detail && <div className="text-xs text-text-secondary mt-1">{tx(detail)}</div>}
       </div>}
       right={action || links.length ? [{ type: 'custom', unboxed: true, node: <div className="flex items-center gap-2">
-        {links.map(l => <Button key={l.href} variant="ghost" size="sm" label={l.label} onClick={() => window.open(l.href, '_blank', 'noopener,noreferrer')} />)}
-        {action && <Button variant="secondary" size="sm" label={action.label} aria-label={action.label} loading={action.busy}
+        {links.map(l => <Button key={l.href} variant="ghost" size="sm" label={tx(l.label)} onClick={() => window.open(l.href, '_blank', 'noopener,noreferrer')} />)}
+        {action && <Button variant="secondary" size="sm" label={tx(action.label)} aria-label={tx(action.label)} loading={action.busy}
           disabled={action.disabled} onClick={action.onClick} />}
       </div> }] : undefined}
     />

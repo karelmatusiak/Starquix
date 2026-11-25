@@ -6,8 +6,9 @@ import { parseRemote } from './github.mjs';
 import { lfs, partition } from './into.mjs';
 import { deploysPages, ownPagesWorkflow, PAGES_WORKFLOW, pagesFilesCurrent, writePagesFiles } from './pages.mjs';
 import { freeName, pageHash, siteSlug } from '../cloudflare.mjs';
+import { t } from '../i18n.mjs';
 
-const fail = (code, message, extra) => Object.assign(new Error(message), { code }, extra);
+const fail = (code, message, extra) => Object.assign(new Error(t(message)), { code }, extra);
 const str = (v, name, max = 200) => {
   if (typeof v !== 'string' || !v.trim() || v.length > max) throw fail('invalid', `Invalid ${name}`);
   return v.trim();
@@ -99,7 +100,7 @@ const ghName = (v, what) => {
 };
 const LARGE_KB = 50_000; // 20: "it can take a minute" (GitHub reports the repo size in KB)
 /** 9/17–19: what Publish into refuses, in the words the editor shows. */
-const unsupported = (repo, why) => fail('repo-unsupported', `${repo} ${why}`);
+const unsupported = (repo, why) => fail('repo-unsupported', `${repo} ${t(why)}`);
 const SUBMODULES = "uses Git submodules. Starquix can't publish into it yet.";
 const LFS = "stores files with Git LFS. Starquix can't publish into it yet.";
 function refuseRepo(info) {
@@ -250,10 +251,10 @@ const OPS = {
         if (refusal) { await engine.dropTip(); throw unsupported(info.repo, refusal); }
         keep = parts.keep;
       }
-      const { wrote } = await engine.publishInto({ url: info.cloneUrl, branch, tip: tip?.oid ?? null, keep, author, message: 'Publish from Starquix' });
+      const { wrote } = await engine.publishInto({ url: info.cloneUrl, branch, tip: tip?.oid ?? null, keep, author, message: t('Publish from Starquix') });
       return { owner: info.owner, repo: info.repo, htmlUrl: info.htmlUrl, wrote };
     } catch (e) {
-      if (e.code === 'HttpError' && e.data?.statusCode === 403) throw fail('no-access', `Starquix can't push to ${info.owner}/${info.repo}.`); // 31
+      if (e.code === 'HttpError' && e.data?.statusCode === 403) throw fail('no-access', t("Starquix can't push to {owner}/{repo}.", { owner: info.owner, repo: info.repo })); // 31
       throw e;
     }
   },
@@ -297,7 +298,7 @@ const OPS = {
   async pagesBranch(ctx, engine, a) {
     const [branch, message] = [str(a.branch, 'branch name', 100), str(a.message, 'message')];
     const { gh } = await requireRemote(engine);
-    if (!gh || await engine.config(HOST) !== 'pages' || await ownPagesWorkflow(engine.dir)) throw fail('invalid', 'GitHub Pages is not published by Starquix here');
+    if (!gh || await engine.config(HOST) !== 'pages' || await ownPagesWorkflow(engine.dir)) throw fail('invalid', t('GitHub Pages is not published by Starquix here'));
     if (await engine.mergeState()) throw fail('merging', 'Finish the merge first'); // 24
     const [live, here] = [await liveBranch(ctx, gh), await engine.branch()];
     if (branch !== here && branch !== live) throw fail('invalid', 'Pick the branch you are on or the default branch');

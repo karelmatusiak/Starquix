@@ -6,7 +6,7 @@ const HOUR = 3_600_000;
 const release = (tag, assets = [`Starquix-${tag.replace(/^v/, '')}-arm64.dmg`], extra = {}) =>
   ({ tag_name: tag, draft: false, prerelease: false, assets: assets.map(name => ({ name })), ...extra });
 const ok = body => async () => ({ ok: true, status: 200, json: async () => body });
-const page = tag => `https://github.com/Mayhopar/Starquix/releases/tag/${tag}`;
+const page = tag => `https://github.com/karelmatusiak/Starquix/releases/tag/${tag}`;
 const mac = (fetch, options = {}) => {
   const emit = vi.fn();
   return { emit, check: createUpdateCheck({ fetch, current: '0.3.2', platform: 'darwin', arch: 'arm64', feed: RELEASES, emit, ...options }) };
@@ -124,7 +124,7 @@ describe('schedule', () => {
     const fetch = vi.fn(ok([]));
     await mac(fetch).check.tick();
     expect(fetch).toHaveBeenCalledWith(RELEASES, expect.objectContaining({ headers: { Accept: 'application/vnd.github+json' } }));
-    expect(RELEASES).toBe('https://api.github.com/repos/Mayhopar/Starquix/releases?per_page=10');
+    expect(RELEASES).toBe('https://api.github.com/repos/karelmatusiak/Starquix/releases?per_page=10');
   });
 });
 

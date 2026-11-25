@@ -7,7 +7,11 @@ import { useThemesLibrary } from '@/context/ThemesLibraryContext';
 import { useOptionalUndoContext } from '@/context/UndoContext';
 import { ThemeZipError } from '@/services/ThemeProcessor';
 import type { IssueCopy } from '@/utils/operationIssue';
+import { t } from '@/i18n';
 import { BUILT_IN_THEMES, uploadThemeId } from '@/utils/libraryThemes';
+
+/** Built-in theme names are chrome. An uploaded theme keeps the name the user gave it. */
+const themeLabel = (id: string, name: string) => (id === 'starquix' || id === 'classic' ? t(name) : name);
 
 const MAX_ZIP_BYTES = 10 * 1024 * 1024;
 
@@ -52,7 +56,8 @@ export const ThemePicker: React.FC<{ onUpload: () => void; uploading: boolean }>
   const close = useCallback(() => { setIsOpen(false); }, []);
 
   const uploads = themes.map((t) => ({ id: uploadThemeId(t._id), name: t.name, themeId: t._id }));
-  const label = [...BUILT_IN_THEMES, ...uploads].find((o) => o.id === activeTheme)?.name ?? BUILT_IN_THEMES[0].name;
+  const active = [...BUILT_IN_THEMES, ...uploads].find((o) => o.id === activeTheme);
+  const label = active ? themeLabel(active.id, active.name) : themeLabel(BUILT_IN_THEMES[0].id, BUILT_IN_THEMES[0].name);
   const pick = (theme: string) => {
     setActiveTheme(theme).catch((err) => console.error('Failed to set the theme:', err));
     close();
@@ -85,7 +90,7 @@ export const ThemePicker: React.FC<{ onUpload: () => void; uploading: boolean }>
       />
       <Menu isOpen={isOpen} onClose={close} triggerRef={triggerRef} placement="bottom-end" width={240}>
         {BUILT_IN_THEMES.map((t) => (
-          <MenuItem key={t.id} label={t.name} selected={activeTheme === t.id} onSelect={() => pick(t.id)} />
+          <MenuItem key={t.id} label={themeLabel(t.id, t.name)} selected={activeTheme === t.id} onSelect={() => pick(t.id)} />
         ))}
         {uploads.length > 0 && <div className="border-t border-stroke my-1" />}
         {uploads.map((u) => (

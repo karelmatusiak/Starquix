@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { t } from '@/i18n';
 import * as Y from 'yjs';
 import type { Project, Page, PagesTree, PageComponent } from '@/api/types';
 import { isLocalProjectId, findLocalProjectEntry, localPageId, PROJECT_NOT_READY, discoverPagesFromPaths, markFilesTruth } from '@/utils/localMode';
@@ -353,7 +354,7 @@ export function useProjectSync({
         onLoadedRef.current?.(project);
         return;
       }
-      throw new ProjectNotFoundError(projectId, 'This project was made with an older version of Starquix and cannot be opened here. Export it as a ZIP from that version, then use Import.');
+      throw new ProjectNotFoundError(projectId, t('This project was made with an older version of Starquix and cannot be opened here. Export it as a ZIP from that version, then use Import.'));
     } catch (error) {
       onErrorRef.current?.(error as Error);
     }

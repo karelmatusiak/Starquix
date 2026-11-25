@@ -20,6 +20,7 @@ import { GripIcon as SharedGripIcon } from '@/assets/icons';
  * <Row title="Layout" expandable expanded={open} onExpandChange={setOpen}>…</Row>
  */
 import React, { forwardRef, useCallback, useState } from 'react';
+import { tx } from '@/i18n';
 import { ChevronDownBigIcon } from '@/assets/icons';
 import { cx } from './cx';
 import { renderSlot, renderSlotSkeleton, type RowSlotSpec, type SlotSize } from './Slot';
@@ -271,7 +272,7 @@ const RowBase = forwardRef<HTMLDivElement, RowProps & { dndState?: ReturnType<ty
           {/* Title section */}
           <div className={cx('flex-1 min-w-0', (leftContent || (draggable && !skeleton)) ? config.titleGap : false)}>
             {title !== undefined && <div className={titleTextClass}>{skeleton ? <SkeletonText line={config.titleLine}>{title}</SkeletonText> : title}</div>}
-            {caption && <div className="text-xs truncate text-text-secondary">{skeleton ? <SkeletonText line="h-4" bar="h-2.5">{caption}</SkeletonText> : caption}</div>}
+            {caption && <div className="text-xs truncate text-text-secondary">{skeleton ? <SkeletonText line="h-4" bar="h-2.5">{tx(caption)}</SkeletonText> : tx(caption)}</div>}
           </div>
 
           {/* Right section */}

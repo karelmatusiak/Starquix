@@ -2,8 +2,9 @@
 // docs/plans/2026-10-20-publish-branch-selection-design.md), and what Publish into reads (repos, repo, tree, text,
 // deployedBy — docs/plans/2026-10-18-publish-into-existing-repo-design.md). No retries.
 import { PAGES_BRANCH_VAR, PAGES_WORKFLOW } from './pages.mjs';
+import { t } from '../i18n.mjs';
 
-const fail = (code, message, extra) => Object.assign(new Error(message), { code }, extra);
+const fail = (code, message, extra) => Object.assign(new Error(t(message)), { code }, extra);
 
 /** owner/repo of a github.com https remote; anything else (a test server) → null. */
 export function parseRemote(url) {

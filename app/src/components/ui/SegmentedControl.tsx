@@ -3,6 +3,7 @@
  * carry a dropdown for overflow options. (Ported from DesignBar/shared.)
  */
 import React, { useState, useRef, useCallback, useMemo } from 'react';
+import { tx } from '@/i18n';
 import { Popover } from './Popover';
 import { MenuItem } from './Menu';
 import { ChevronDownIcon } from '@/assets/icons';
@@ -106,10 +107,10 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                 isActive ? 'bg-btn-secondary-fill-default text-btn-secondary-text-default' : 'bg-transparent text-text-secondary hover:text-text',
               )}
               onClick={() => handleSegmentClick(option)}
-              title={option.title || displayLabel || option.value}
+              title={tx(option.title || displayLabel || option.value)}
             >
               {option.icon}
-              {displayLabel && <span className="truncate">{displayLabel}</span>}
+              {displayLabel && <span className="truncate">{tx(displayLabel)}</span>}
               {hasDropdown && showChevron && (
                 <ChevronDownIcon
                   className={cx('w-4 h-4 shrink-0 transition-transform', openDropdown === option.value && 'rotate-180')}
@@ -129,8 +130,8 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                 {option.dropdown!.map((subOption) => (
                   <MenuItem
                     key={subOption.value}
-                    label={subOption.label}
-                    title={subOption.title || subOption.label}
+                    label={tx(subOption.label)}
+                    title={tx(subOption.title || subOption.label)}
                     selected={!mixed && value === subOption.value}
                     onSelect={() => {
                       onChange(subOption.value);

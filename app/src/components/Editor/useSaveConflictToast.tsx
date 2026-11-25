@@ -8,6 +8,7 @@
  * (kind 'unknown') retries by itself and says nothing.
  */
 import { useEffect } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 
 import { Button } from '@/components/ui';
@@ -21,7 +22,7 @@ export const SAVE_CONFLICT_TOAST_ID = 'sq-save-conflict';
 
 function message(error: unknown): string {
   const file = error instanceof MaterializationFailure ? error.file?.split('/').pop() : undefined;
-  return file ? `Couldn't save a change: ${file} changed outside Starquix.` : "Couldn't save a change: it no longer fits the file.";
+  return file ? t("Couldn't save a change: {0} changed outside Starquix.", { 0: file }) : t("Couldn't save a change: it no longer fits the file.");
 }
 
 export function useSaveConflictToast(projectId: string): void {
