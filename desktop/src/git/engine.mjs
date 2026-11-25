@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import git from 'isomorphic-git';
+import { t } from '../i18n.mjs';
 // `node_modules` without a slash: projects symlink it to the app's shared runtime deps, and a
 // dir-only pattern would not match the symlink. Astro's cache and macOS's .DS_Store rewrite themselves: kept in a
 // version they show changes nobody made, which block Restore, branch switch and Pull (#30). An imported site keeps its
@@ -17,7 +18,7 @@ const projectPath = filepath => !RUNTIME.has(filepath.split('/')[0]);
 const INTO = 'sq-into';
 const INTO_REF = 'refs/sq/into';
 /** Errors carry a `code` the IPC layer forwards (`<code>: <message>`). */
-const fail = (code, message) => Object.assign(new Error(message), { code });
+const fail = (code, message) => Object.assign(new Error(t(message)), { code });
 /** A branch name git accepts (Versions' New branch, Publish into's branch) — or `invalid`. */
 export function branchName(ref) {
   if (typeof ref !== 'string' || ref.length > 100 || !/^[\w.-]+(\/[\w.-]+)*$/.test(ref) || ref.includes('..') || ref.startsWith('-')
@@ -205,7 +206,7 @@ export function createEngine(dir, { http, onAuth } = {}) {
     const owned = (await git.readTree({ ...base, oid: theirs })).tree.find(e => e.path === 'node_modules' || e.path === '.sq');
     if (owned) throw fail('runtime-files', `GitHub's version contains ${owned.path}/. Remove it from the repository on GitHub, then get the latest.`);
     try {
-      await git.merge({ ...base, ours: ref, theirs, abortOnConflict: false, author, message: 'Merge from GitHub' });
+      await git.merge({ ...base, ours: ref, theirs, abortOnConflict: false, author, message: t('Merge from GitHub') });
       await git.checkout({ ...base, ref, force: true });
       return { conflicts: [] };
     } catch (e) {
@@ -233,7 +234,7 @@ export function createEngine(dir, { http, onAuth } = {}) {
     // Conflicted files resolved to Mine equal HEAD, so changedRows skips them — stage them explicitly
     // to clear their conflict stages.
     for (const f of new Set([...Object.keys(m.files), ...(await changedRows()).map(([f]) => f)])) await stage(f);
-    const oid = await git.commit({ ...base, author, message: 'Merge from GitHub', parent: [m.ours, m.theirs] });
+    const oid = await git.commit({ ...base, author, message: t('Merge from GitHub'), parent: [m.ours, m.theirs] });
     await fsp.rm(MERGE); return oid;
   }
   // Like `git merge --abort`: only what the pull wrote goes back, and only while it is as the pull left it — pages,

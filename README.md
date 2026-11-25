@@ -1,111 +1,101 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/readme/logo-dark.svg">
-    <img src=".github/readme/logo-light.svg" alt="Starquix" width="220">
-  </picture>
-</p>
+# Webdílna
 
-<p align="center">Free visual editor for Astro websites. Desktop app for macOS, Windows and Linux.</p>
+Vizuální editor webů v Astro. Desktopová aplikace pro macOS, Windows a Linux.
 
-<p align="center">
-  <a href="https://github.com/Mayhopar/Starquix/releases/latest"><img src=".github/readme/btn-download.svg" alt="Download for Mac" height="36"></a>
-  <a href="https://github.com/Mayhopar/Starquix/releases/latest"><img src=".github/readme/btn-download-windows.svg" alt="Download for Windows" height="36"></a>
-  <a href="https://github.com/Mayhopar/Starquix/releases/latest"><img src=".github/readme/btn-download-linux.svg" alt="Download for Linux" height="36"></a>
-  <a href="https://github.com/Mayhopar/Starquix/releases"><img src=".github/readme/btn-releases.svg" alt="Releases" height="36"></a>
-</p>
+Webdílna vychází z open-source projektu [Starquix](https://github.com/Mayhopar/Starquix) (MIT).
 
-<p align="center">
-  <a href="LICENSE"><img src=".github/readme/badge-license.svg" alt="MIT license" height="22"></a>
-  <img src=".github/readme/badge-platform.svg" alt="macOS, Windows, Linux" height="22">
-  <a href="https://astro.build"><img src=".github/readme/badge-stack.svg" alt="Astro" height="22"></a>
-  <a href="https://discord.gg/Fpuwzbd48V"><img src=".github/readme/badge-discord.svg" alt="Discord" height="22"></a>
-</p>
+Webdílna otevře složku projektu Astro a ukáže skutečný web na plátně. Vyberete prvek a změníte ho v panelu Návrh; změna se zapíše do souborů. Projekt zůstane obyčejná složka Astro a Tailwind na vašem počítači.
 
-<p align="center">
-  <img src=".github/readme/starquix-hero.jpg" alt="Starquix with a heading selected and the Design panel open" width="900">
-</p>
+Název a logo Starquix vytvořil Oleg Maykhopar a licence MIT se na ně nevztahuje. Webdílna je proto nepoužívá jako vlastní značku.
 
-Starquix opens your Astro project folder and shows the real site on a canvas. Select an element and change it in the Design panel; the change is written to your files. The project stays a plain Astro and Tailwind folder on your computer.
+## Sestavování s agenty
 
-## Build with agents
+V zabudovaném terminálu spusťte Claude Code, Codex nebo jiného CLI agenta, nebo si v aplikaci pište s vlastním API klíčem (Anthropic, OpenAI, OpenRouter nebo místní Ollama). Agenti upravují otevřený projekt přes zabudovaný MCP server a změny se ukážou na plátně.
 
-Run Claude Code, Codex or another CLI agent in the built-in terminal, or chat in the app with your own API key (Anthropic, OpenAI, OpenRouter or a local Ollama). Agents edit the open project through the built-in MCP server, and their changes show on the canvas.
+## Úpravy ručně
 
-<img src=".github/readme/agents.gif" alt="Claude Code in the built-in terminal adds a section to the page" width="800">
+Text, obrázky, barvy a rozvržení měníte na plátně nebo v panelu Návrh.
 
-## Edit by hand
+## Publikace a export
 
-Change text, images, colors and layout on the canvas or in the Design panel.
+Publikace na Cloudflare nebo GitHub Pages, na Netlify nebo Vercel přes repozitář na GitHubu, nebo export složky projektu.
 
-<img src=".github/readme/edit-by-hand.gif" alt="Editing a heading on the canvas; the code editor shows the changed line in red and green" width="800">
+## Co je v aplikaci
 
-## Publish or export
+- **CMS.** Píšete příspěvky a publikujete je jako stránky.
+- **SEO.** Titulky, popisy a skóre každé stránky.
+- **Proměnné.** Barvu změníte jednou a projeví se všude.
+- **Místní soubory.** Web jsou obyčejné soubory Astro ve složce na počítači.
 
-Publish to Cloudflare or GitHub Pages, to Netlify or Vercel through your GitHub repo, or export the project folder.
+## Jazyk rozhraní
 
-<img src=".github/readme/deploy.gif" alt="Publishing the site to Cloudflare" width="800">
+Rozhraní je česky. Anglický text ve zdrojáku je klíč katalogu `app/src/i18n/cs.json`; chybějící překlad se ukáže anglicky. Testy běží s anglickými větami (`VITEST`), aby šly sloučit změny z upstreamu. Technické názvy (SEO, CMS, Astro, Cloudflare, GitHub Pages) zůstávají.
 
-## Also included
+Vnitřní identifikátory (`starquix`, složka `.starquix`, klíče v localStorage, spouštěč `~/.starquix-mcp`) se nemění schválně.
 
-<table>
-  <tr>
-    <td width="50%"><img src=".github/readme/cms.jpg" alt="Post editor"><br><b>CMS.</b> Write blog posts and publish them as pages.</td>
-    <td width="50%"><img src=".github/readme/seo.jpg" alt="SEO panel"><br><b>SEO.</b> Titles, descriptions and a score for every page.</td>
-  </tr>
-  <tr>
-    <td><img src=".github/readme/vars.jpg" alt="Variables table"><br><b>Variables.</b> Change a color once and it updates everywhere.</td>
-    <td><img src=".github/readme/local.jpg" alt="The project folder in Finder"><br><b>Local files.</b> Your site is plain Astro files in a folder on your computer.</td>
-  </tr>
-</table>
+## Aktualizace z upstreamu
 
-## Development
+Upstream je [Mayhopar/Starquix](https://github.com/Mayhopar/Starquix). Jednou ho připojte a pak slučujte do větve `main` tohoto forku:
 
 ```bash
-git clone https://github.com/Mayhopar/starquix.git
-cd starquix
+git remote add upstream https://github.com/Mayhopar/Starquix.git
+git fetch upstream
+git checkout main
+git merge upstream/main
+```
+
+Po sloučení pusťte testy (`cd app && npm run test:run` a `cd desktop && npm test`). Nové anglické věty v rozhraní se v aplikaci ukážou anglicky, dokud je nepřidáte do `app/src/i18n/cs.json`. Klíč je přesně ta anglická věta, hodnota je český překlad. Plugin `app/scripts/i18n-plugin.mjs` při `vite` a `vite build` obalí viditelné literály voláním `sqT`; Vitest ten plugin nenačítá.
+
+Neslučujte tento fork do repozitáře Mayhopar/Starquix.
+
+## Vývoj
+
+```bash
+git clone https://github.com/karelmatusiak/Starquix.git
+cd Starquix
 npm ci
 npm ci --prefix preview-template
 npm ci --prefix desktop
-npm --prefix app run dev -- --host 127.0.0.1 --port 3061 --strictPort   # the editor the desktop app loads
+npm --prefix app run dev -- --host 127.0.0.1 --port 3061 --strictPort   # editor, který načítá desktopová aplikace
 ```
 
-Then, in a second terminal:
+V druhém terminálu:
 
 ```bash
-cd desktop && npm run deps && npm run mcp && npm start      # desktop app (`mcp/` is built, not committed)
+cd desktop && npm run deps && npm run mcp && npm start
 ```
 
-Requires Node.js 22.12+ and npm 10. The desktop app runs on macOS, Windows and Linux.
+Potřeba je Node.js 22.12+ a npm 10. Aplikace běží na macOS, Windows a Linuxu. Sestavení pro macOS má v `desktop/package.json` připravený hardened runtime; podepisování ani notarizace se nenastavují.
 
-A dev launch points `~/.starquix-mcp` (the agent relay launcher) at your checkout, so an installed Starquix app's agents use the dev relay until the installed app launches again.
+Vývojové spuštění nasměruje `~/.starquix-mcp` (spouštěč agentů) na tento checkout. Agenti nainstalované aplikace pak používají vývojový relay, dokud nainstalovanou aplikaci nespustíte znovu.
 
-Tests: `cd app && npm run test:run` and `cd desktop && npm test`.
+Testy: `cd app && npm run test:run` a `cd desktop && npm test`.
 
-| Folder | Contents |
+| Složka | Obsah |
 |---|---|
-| `app/` | Editor (Vite + React) |
-| `desktop/` | Electron app: runs each project's Astro dev server |
-| `preview-template/` | Vite plugin and canvas bridge copied into each project |
-| `mcp/` | MCP server for coding agents |
-| `scripts/` | Bridge and snapshot builds |
-| `fixtures/` | Sample Astro project for tests |
-| `docs/` | Architecture, data flows, how-tos |
+| `app/` | Editor (Vite + React) a katalog `src/i18n/` |
+| `desktop/` | Aplikace Electron: každému projektu spouští dev server Astro |
+| `preview-template/` | Plugin Vite a most plátna, který se kopíruje do projektu |
+| `mcp/` | MCP server pro programovací agenty |
+| `scripts/` | Sestavení mostu a snapshotu |
+| `fixtures/` | Ukázkový projekt Astro pro testy |
+| `docs/` | Architektura, toky dat, návody (anglicky, z upstreamu) |
 
-The bridge source is `app/src/bridge/parts/`. After changing it or `preview-template/`, run `npm run build:snapshot`.
+Zdroj mostu je `app/src/bridge/parts/`. Po změně mostu nebo `preview-template/` spusťte `npm run build:snapshot`.
 
-Bug fixes need a regression test. Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
+Opravy chyb potřebují regresní test. Příspěvky do upstreamu: [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Privacy
+## Soukromí
 
-Projects and API keys are stored on your computer. The app goes online to:
+Projekty a API klíče jsou na vašem počítači. Aplikace jde na síť, aby:
 
-- count anonymous page views with [Plausible](https://plausible.io) (no cookies; `app/src/main.tsx`);
-- check GitHub for a newer release (`desktop/src/update-check.mjs`);
-- load Google Fonts when you pick a font;
-- reach the AI provider and publishing services you connect, with your own keys and accounts.
+- počítala anonymní zobrazení přes [Plausible](https://plausible.io) (bez cookies; `app/src/main.tsx`);
+- se na GitHubu podívala, jestli není novější vydání Webdílny (`desktop/src/update-check.mjs`, repozitář `karelmatusiak/Starquix`);
+- načetla Google Fonts, když vyberete písmo;
+- dosáhla na poskytovatele AI a publikační služby, které připojíte, s vašimi klíči a účty.
 
-Third-party code and assets: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Kód a assety třetích stran: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-## License
+## Licence
 
-MIT. Third-party components keep their own licenses ([THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)). The Starquix name and logo were created by Oleg Maykhopar and are not covered by the license; using them requires his permission.
+MIT. Původní oznámení: Copyright (c) 2026 Oleg Maykhopar and Nikita Osadchiy. Úpravy tohoto forku: Copyright (c) 2026 Karel Matusiak. Součásti třetích stran mají vlastní licence ([THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)). Název a logo Starquix vytvořil Oleg Maykhopar a licence se na ně nevztahuje; k jejich použití je potřeba jeho souhlas.

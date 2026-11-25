@@ -1,13 +1,14 @@
 // GitHub device flow (D2): public OAuth App client id, no secret, no server. The token is
 // encrypted at rest by the injected `crypto` (Electron safeStorage) — never stored plaintext.
 // The "Starquix" OAuth App (Device Flow on); env SQ_GITHUB_CLIENT_ID overrides it (e.g. a test app).
+import { t } from '../i18n.mjs';
 export const CLIENT_ID = process.env.SQ_GITHUB_CLIENT_ID || 'Ov23ligD51hZTM39yEoI';
 const JSON_HEADERS = { accept: 'application/json', 'content-type': 'application/json' };
-const fail = (code, message) => Object.assign(new Error(message), { code });
+const fail = (code, message) => Object.assign(new Error(t(message)), { code });
 
 /** Version author: the GitHub identity when signed in (noreply when the email is private). */
 export function commitAuthor(user) {
-  if (!user) return { name: 'Starquix', email: 'noreply@starquix.app' };
+  if (!user) return { name: t('Starquix'), email: 'noreply@starquix.app' };
   return { name: user.name ?? user.login, email: user.email ?? `${user.id}+${user.login}@users.noreply.github.com` };
 }
 

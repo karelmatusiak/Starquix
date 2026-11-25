@@ -13,6 +13,7 @@
  * popover first, and they stack above the modal.
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { tx } from '@/i18n';
 import { cx } from './cx';
 import { PopoverLayer, PopoverNesting, type RegisterPanel } from './Popover';
 
@@ -44,6 +45,7 @@ const sizes: Record<ModalSize, string> = {
 export const Modal: React.FC<ModalProps> = ({ isOpen, ...props }) => (isOpen ? <OpenModal {...props} /> : null);
 
 function OpenModal({ onClose, children, size = 'auto', className = '', 'aria-label': label }: Omit<ModalProps, 'isOpen'>) {
+  const name = tx(label);
   const modalRef = useRef<HTMLDivElement>(null);
   const panels = useRef(new Set<HTMLElement>());
   const register = useCallback<RegisterPanel>((el) => { panels.current.add(el); return () => { panels.current.delete(el); }; }, []);
@@ -96,7 +98,7 @@ function OpenModal({ onClose, children, size = 'auto', className = '', 'aria-lab
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        aria-label={label}
+        aria-label={name}
         tabIndex={-1}
         className={cx(
           'bg-bg rounded-outer shadow-modal max-h-[90vh] overflow-y-auto transition-all duration-300 outline-none',

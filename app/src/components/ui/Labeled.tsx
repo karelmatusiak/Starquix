@@ -7,6 +7,7 @@
  * <Labeled label="GitHub"><Button variant="outline" size="md" label="Log in" onClick={signIn} /></Labeled>
  */
 import React from 'react';
+import { tx } from '@/i18n';
 import { cx } from './cx';
 import { SkeletonText } from './Skeleton';
 
@@ -25,9 +26,9 @@ export function Labeled({ label, caption, error, skeleton = false, children, cla
   const line = !skeleton && (error || caption);
   return (
     <div className={cx('flex flex-col gap-1 min-w-0', className)} {...rest}>
-      {skeleton ? <SkeletonText line="h-4" bar="h-2.5">{label}</SkeletonText> : <span className="text-xs text-text-secondary truncate">{label}</span>}
+      {skeleton ? <SkeletonText line="h-4" bar="h-2.5">{tx(label)}</SkeletonText> : <span className="text-xs text-text-secondary truncate">{tx(label)}</span>}
       {children}
-      {line && <span className={cx('text-xs break-words', error ? 'text-error' : 'text-text-secondary')}>{line}</span>}
+      {line && <span className={cx('text-xs break-words', error ? 'text-error' : 'text-text-secondary')}>{tx(line)}</span>}
     </div>
   );
 }

@@ -17,6 +17,7 @@ import { captureProject, deleteProject, restoreProject, projectUndo, type Delete
 import { getModifierKey, shortcutLabel } from '@/utils/platform';
 import { useDesktopUpdate } from '@/hooks/useDesktopUpdate';
 import { DISCORD_URL, openExternal } from '@/utils/supportLinks';
+import { t } from '@/i18n';
 
 type ProjectFailure = { issue: OperationIssue; storage: boolean };
 const storageGuidance = 'Browser storage could not complete this action. Free device storage without clearing this site’s data, then try again.';
@@ -124,7 +125,7 @@ export default function ProjectsPage() {
   }, [projects]);
 
   const generateProjectName = useCallback(() => {
-    const baseName = 'New Project';
+    const baseName = t('New Project');
     const existingNames = new Set(projects.map((p) => p.name));
 
     if (!existingNames.has(baseName)) {
@@ -324,24 +325,10 @@ export default function ProjectsPage() {
       <footer className="fixed bottom-0 left-0 right-0 py-4 text-center">
         <p className="text-xs text-text-muted opacity-50">
           Starquix{update && ` ${update.current}`} © 2026{' '}
-          <a
-            href="https://mayhopar.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-text hover:opacity-100 transition-all"
-          >
-            Oleg Maykhopar
-          </a>
-          {' '}and{' '}
-          <a
-            href="https://www.linkedin.com/in/nikita-osadchiy-106242173/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-text hover:opacity-100 transition-all"
-          >
-            Nikita Osadchiy
-          </a>
-          . Licensed under{' '}
+          <a href="https://mayhopar.com/" target="_blank" rel="noopener noreferrer" className="hover:text-text hover:opacity-100 transition-all">Oleg Maykhopar</a>
+          {', '}
+          <a href="https://www.linkedin.com/in/nikita-osadchiy-106242173/" target="_blank" rel="noopener noreferrer" className="hover:text-text hover:opacity-100 transition-all">Nikita Osadchiy</a>
+          {' a '}Karel Matusiak{'. '}{t('Licensed under')}{' '}
           <a
             href="https://github.com/Mayhopar/starquix/blob/main/LICENSE"
             target="_blank"
@@ -349,6 +336,15 @@ export default function ProjectsPage() {
             className="hover:text-text hover:opacity-100 transition-all"
           >
             MIT
+          </a>
+          {' · '}
+          <a
+            href="https://github.com/Mayhopar/Starquix"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-text hover:opacity-100 transition-all"
+          >
+            Webdílna vychází z open-source projektu Starquix (MIT).
           </a>
         </p>
       </footer>

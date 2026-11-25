@@ -4,6 +4,7 @@
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
 import { abortSafe } from './abort-safe.mjs';
+import { t } from './i18n.mjs';
 
 // The owner's "Starquix" Cloudflare OAuth client (public id, PKCE, no secret — ledger 60); env SQ_CLOUDFLARE_CLIENT_ID
 // overrides. Private until its client URL is verified and it is made public: only members of the owner's account can sign in.
@@ -19,7 +20,7 @@ const SANDBOX_SCOPES = SCOPES.map(s => s.replace('registrar-domains.', 'registra
 const OAUTH = 'https://dash.cloudflare.com/oauth2';
 const EARLY_MS = 60_000; // ledger 7: refresh a minute before expiry
 const GET_MS = 30_000; // a hung read must not hold the project's op lane (the poll is a GET)
-const fail = (code, message, extra) => Object.assign(new Error(message), { code }, extra);
+const fail = (code, message, extra) => Object.assign(new Error(t(message)), { code }, extra);
 // Assets-only Worker (wrangler's "static assets upload only" metadata); Astro's 404.html answers unknown paths.
 const ASSET_CONFIG = { html_handling: 'auto-trailing-slash', not_found_handling: '404-page' };
 const COMPATIBILITY_DATE = '2026-09-01';

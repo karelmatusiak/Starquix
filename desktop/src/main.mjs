@@ -1,6 +1,6 @@
 // Electron main: owns project dirs and Astro children; the editor renderer gets
 // a scoped preload API, never Node, never an instance secret.
-import { app, BrowserWindow, ipcMain, net, protocol, safeStorage, session, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, net, protocol, safeStorage, session, shell } from 'electron';
 import fsp from 'node:fs/promises';
 import gitHttp from 'isomorphic-git/http/node';
 import path from 'node:path';
@@ -26,7 +26,9 @@ import { createUpdateCheck, feedUrl } from './update-check.mjs';
 import { execFile } from 'node:child_process';
 import { createRequire } from 'node:module';
 import os from 'node:os';
+import { t } from './i18n.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url));
+app.setName('Webdílna');
 if (probeInvisible(process.env) && process.platform === 'darwin') app.setActivationPolicy('accessory');
 if (process.env.SQ_USER_DATA) app.setPath('userData', path.resolve(process.env.SQ_USER_DATA));
 // Uncaught main-process exceptions → <userData>/logs/main.log, never Electron's modal dialog (crash-log.mjs).
@@ -34,7 +36,7 @@ if (process.env.SQ_USER_DATA) app.setPath('userData', path.resolve(process.env.S
 Error.stackTraceLimit = 50;
 installCrashLog(path.join(app.getPath('userData'), 'logs', 'main.log'));
 // Cloudflare ledger 12: Google refuses sign-in in "embedded" browsers by user agent; popups only get the app-wide fallback.
-app.userAgentFallback = app.userAgentFallback.replace(/ (Electron|Starquix[\w-]*)\/\S+/gi, '');
+app.userAgentFallback = app.userAgentFallback.replace(/ (Electron|Starquix[\w-]*|Webd[ií]lna[\w-]*)\/\S+/gi, '');
 process.env.SQ_COMPILE_CACHE ??= path.join(app.getPath('userData'), 'compile-cache'); // inherited by every Astro child
 // Packaged: the bundled editor build on starquix://app. Unpacked (npm start, e2e):
 // the dev editor on a loopback port — :3061 by default, SQ_EDITOR_URL picks another so parallel sessions don't share one.
@@ -43,7 +45,7 @@ const { editorUrl, editorOrigin } = resolveEditor({ isPackaged: app.isPackaged, 
 process.env.SQ_EDITOR_ORIGIN = editorOrigin; // inherited by every Astro child: its only CORS origin (wrapper.mjs)
 if (app.isPackaged) protocol.registerSchemesAsPrivileged([{ scheme: 'starquix',
   privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }]);
-const projectsRoot = process.env.SQ_PROJECTS_ROOT ?? path.join(app.getPath('home'), 'Starquix');
+const projectsRoot = process.env.SQ_PROJECTS_ROOT ?? path.join(app.getPath('home'), 'Webdílna');
 const projects = createProjects(projectsRoot);
 let win; let allowQuit = false; let quitting = false;
 /** Navigation stays on the editor, in every frame (the canvas also on its loopback preview: editor.mjs `strays`); web
@@ -229,6 +231,58 @@ handle('fetch', async (id, lease, requestId, kind, route, init) => {
     cancel.abort(); // done: drops the finished request's signal listeners now, not at the 120 s deadline
   }
 });
+function appMenu() {
+  const about = { role: 'about', label: t('About Webdílna') };
+  const file = process.platform === 'darwin'
+    ? { role: 'close', label: t('Close Window') }
+    : { role: 'quit', label: t('Quit Webdílna') };
+  return [
+    ...(process.platform === 'darwin' ? [{
+      label: 'Webdílna',
+      submenu: [
+        about,
+        { type: 'separator' },
+        { role: 'services', label: t('Services') },
+        { type: 'separator' },
+        { role: 'hide', label: t('Hide Webdílna') },
+        { role: 'hideOthers', label: t('Hide Others') },
+        { role: 'unhide', label: t('Show All') },
+        { type: 'separator' },
+        { role: 'quit', label: t('Quit Webdílna') },
+      ],
+    }] : []),
+    { label: t('File'), submenu: [file] },
+    { label: t('Edit'), submenu: [
+      { role: 'undo', label: t('Undo') },
+      { role: 'redo', label: t('Redo') },
+      { type: 'separator' },
+      { role: 'cut', label: t('Cut') },
+      { role: 'copy', label: t('Copy') },
+      { role: 'paste', label: t('Paste') },
+      { role: 'selectAll', label: t('Select All') },
+    ] },
+    { label: t('View'), submenu: [
+      { role: 'reload', label: t('Reload') },
+      { role: 'forceReload', label: t('Force Reload') },
+      { role: 'toggleDevTools', label: t('Toggle Developer Tools') },
+      { type: 'separator' },
+      { role: 'resetZoom', label: t('Actual Size') },
+      { role: 'zoomIn', label: t('Zoom In') },
+      { role: 'zoomOut', label: t('Zoom Out') },
+      { type: 'separator' },
+      { role: 'togglefullscreen', label: t('Toggle Full Screen') },
+    ] },
+    { label: t('Window'), submenu: [
+      { role: 'minimize', label: t('Minimize') },
+      { role: 'zoom', label: t('Zoom') },
+      ...(process.platform === 'darwin'
+        ? [{ type: 'separator' }, { role: 'front', label: t('Bring All to Front') }]
+        : [{ role: 'close', label: t('Close') }]),
+    ] },
+    { label: t('Help'), submenu: [about] },
+  ];
+}
+
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', () => { win?.show(); win?.focus(); });
@@ -250,14 +304,21 @@ else {
   });
   app.on('window-all-closed', () => app.quit());
   app.whenReady().then(() => {
-    // macOS app menu → About Starquix (Electron's default menu); Windows has none — the Projects footer carries the same line.
-    app.setAboutPanelOptions({ copyright: 'Starquix © 2026 Oleg Maykhopar and Nikita Osadchiy. Licensed under MIT', credits: 'https://github.com/Mayhopar/starquix' });
+    // macOS app menu → About Webdílna. Windows has no about panel — the Projects footer carries the same line.
+    app.setAboutPanelOptions({
+      applicationName: 'Webdílna',
+      applicationVersion: app.getVersion(),
+      copyright: 'Webdílna © 2026 Karel Matusiak. Starquix © 2026 Oleg Maykhopar a Nikita Osadchiy. MIT.',
+      credits: 'Webdílna vychází z open-source projektu Starquix (MIT).\nhttps://github.com/Mayhopar/Starquix',
+      website: 'https://github.com/Mayhopar/Starquix',
+    });
+    Menu.setApplicationMenu(Menu.buildFromTemplate(appMenu()));
     if (app.isPackaged) {
       const root = path.join(resources, 'editor');
       protocol.handle('starquix', request => editorResponse(root, request.url, href => net.fetch(href)));
     }
     // Windows/Linux: the default menu bar (File Edit View…) stays hidden until Alt; its shortcuts keep working.
-    win = new BrowserWindow({ width: 1440, height: 900, minWidth: 900, minHeight: 600, autoHideMenuBar: true, ...probeWindowOptions(process.env), webPreferences: {
+    win = new BrowserWindow({ title: 'Webdílna', width: 1440, height: 900, minWidth: 900, minHeight: 600, autoHideMenuBar: true, ...probeWindowOptions(process.env), webPreferences: {
       preload: path.join(here, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true,
     } });
     guard(win.webContents);

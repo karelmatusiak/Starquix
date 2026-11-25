@@ -5,6 +5,7 @@
  */
 import { useState, useRef, useLayoutEffect, useId, cloneElement, isValidElement, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { tx } from '@/i18n';
 
 export interface TooltipProps {
   content: string;
@@ -54,7 +55,7 @@ export function Tooltip({ content, children }: TooltipProps) {
           className="fixed px-2 py-1 text-xs rounded-inner bg-bg-contrast text-text border border-stroke whitespace-pre-line w-max z-flyout pointer-events-none shadow-flyout"
           style={{ top: pos.top, left: pos.left }}
         >
-          {content}
+          {tx(content)}
         </span>,
         document.body,
       )}

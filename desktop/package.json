@@ -1,11 +1,11 @@
 {
   "name": "starquix-desktop",
-  "productName": "Starquix",
+  "productName": "Webdílna",
   "version": "0.0.2",
   "license": "MIT",
-  "description": "Starquix desktop editor",
-  "author": "Starquix",
-  "homepage": "https://github.com/Mayhopar/Starquix",
+  "description": "Webdílna — vizuální editor webů v Astro",
+  "author": "Karel Matusiak",
+  "homepage": "https://github.com/karelmatusiak/Starquix",
   "private": true,
   "type": "module",
   "main": "src/main.mjs",
@@ -28,7 +28,8 @@
     "vitest": "4.0.16"
   },
   "build": {
-    "appId": "com.starquix.desktop",
+    "appId": "cz.jinyuhel.webdilna",
+    "copyright": "Copyright © 2026 Karel Matusiak. Webdílna vychází ze Starquix (MIT) © 2026 Oleg Maykhopar a Nikita Osadchiy.",
     "directories": {
       "output": "dist"
     },
@@ -90,8 +91,8 @@
         "deb"
       ],
       "category": "Development",
-      "executableName": "starquix",
-      "maintainer": "Starquix <8853120+Mayhopar@users.noreply.github.com>",
+      "executableName": "webdilna",
+      "maintainer": "Karel Matusiak",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "electronFuses": {

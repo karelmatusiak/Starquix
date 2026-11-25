@@ -11,6 +11,7 @@
  * <Button variant="danger" label="Delete" loading={deleting} />
  */
 import React, { forwardRef } from 'react';
+import { tx } from '@/i18n';
 import { cx } from './cx';
 import { Spinner } from './Slot';
 
@@ -122,6 +123,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ? variantStyle.disabled ?? `${variantStyle.inactive} opacity-50`
       : active ? variantStyle.active : variantStyle.inactive;
     const lead = loading || !!icon;
+    const text = typeof (label ?? children) === 'string' ? tx((label ?? children) as string) : (label ?? children);
+    const ariaLabel = typeof props['aria-label'] === 'string' ? tx(props['aria-label']) : props['aria-label'];
+    const titleAttr = typeof props.title === 'string' ? tx(props.title) : props.title;
     const pad = lead && iconRight ? sz.pad.both : lead ? sz.pad.lead : iconRight ? sz.pad.trail : sz.pad.text;
     // Square = the Figma's Type=Icon, only when asked: some callers put text in `icon` (ZoomChip)
     const geometry = variant === 'link'
@@ -143,9 +147,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           className,
         )}
         {...props}
+        aria-label={ariaLabel}
+        title={titleAttr}
       >
         {loading ? <Spinner className={sz.spinner} /> : icon}
-        {label ?? children}
+        {text}
         {iconRight}
       </button>
     );

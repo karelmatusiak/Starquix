@@ -2,6 +2,7 @@
  * EmptyState - the "No X yet" block: icon + title + caption + optional action.
  */
 import React from 'react';
+import { tx } from '@/i18n';
 import { cx } from './cx';
 import { Button, type ButtonProps } from './Button';
 
@@ -18,14 +19,14 @@ export function EmptyState({ icon, title, caption, action, className = '' }: Emp
   return (
     <div className={cx('flex flex-col items-center justify-center gap-2 py-8 px-4 text-center', className)}>
       {icon && <div className="text-text-secondary [&>svg]:w-8 [&>svg]:h-8">{icon}</div>}
-      <div className="text-sm-medium text-text-muted">{title}</div>
-      {caption && <div className="text-xs text-text-secondary max-w-64">{caption}</div>}
+      <div className="text-sm-medium text-text-muted">{tx(title)}</div>
+      {caption && <div className="text-xs text-text-secondary max-w-64">{tx(caption)}</div>}
       {action && (
         <Button
           variant={action.variant ?? 'secondary'}
           size={action.size ?? 'sm'}
           icon={action.icon}
-          label={action.label}
+          label={tx(action.label)}
           onClick={action.onClick}
           className="mt-1"
         />

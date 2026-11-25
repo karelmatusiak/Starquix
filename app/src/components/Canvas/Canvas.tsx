@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, useEffect, useMemo, useSyncExternalStore } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Button, OperationNotice } from '@/components/ui';
 import { ViewportFrame } from './ViewportFrame';
@@ -763,12 +764,12 @@ export function Canvas({ activeDragId, isReorderPending, localInstance, runtimeF
   ) : activeTopTab === 'content' ? (
     // On the Content tab with no post open, the page design canvas is
     // irrelevant — show a placeholder. Opening a post hits the branch above.
-    placeholder('Select a post to edit')
+    placeholder(t('Select a post to edit'))
   ) : activeCollectionId ? (
     <VariablesEditor />
   ) : hideSite ? (
     // The Assets tab never shows the site: people dropped components into it (owner 2026-11-17).
-    placeholder(componentOpening ? null : 'Select a component to edit')
+    placeholder(componentOpening ? null : t('Select a component to edit'))
   ) : null;
 
   // Returning to the canvas from an overlay: rescue if the frame is fully

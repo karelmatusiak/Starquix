@@ -1,3 +1,5 @@
+import { t } from '@/i18n';
+
 // The prompt AI Settings → MCP gives the user to paste into their coding agent
 // (Claude Code, Cursor, Codex — anything with a shell). It drives the relay
 // CLI directly (no agent restart) with the editor's code, so the relay adopts
@@ -36,7 +38,7 @@ function relayServer(): { command: string; args: string[]; env: Record<string, s
 export function mcpAgentPrompt(code: string): string {
   const server = relayServer();
   return [
-    'Connect to my Starquix editor and make changes in it.',
+    t('Connect to my Starquix editor and make changes in it.'),
     `sq = ${relayCommand()}`,
     `1. sq pair --code ${code}`,
     '2. sq call get_project — follow the designGuide it returns for everything you create.',

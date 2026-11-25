@@ -6,13 +6,14 @@
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import { t } from '../i18n.mjs';
 
 /** Ours, never `deploy.yml`: Astro's own Pages guide uses that name, and github.mjs reads THIS workflow's runs. */
 export const PAGES_WORKFLOW = 'starquix-pages.yml';
 /** The branch Pages shows (docs/plans/2026-10-20-publish-branch-selection-design.md B1): a GitHub repository variable,
  *  unset = the default branch. On GitHub, never local: the workflow reads it, and every computer sees the same choice. */
 export const PAGES_BRANCH_VAR = 'STARQUIX_PAGES_BRANCH';
-const fail = (code, message, extra) => Object.assign(new Error(message), { code }, extra);
+const fail = (code, message, extra) => Object.assign(new Error(t(message)), { code }, extra);
 const REBASE_SOURCE = fs.readFileSync(new URL('./pages-rebase.mjs', import.meta.url), 'utf8');
 
 /** Own steps instead of withastro/action: imported projects often have no lockfile, and their
@@ -26,7 +27,7 @@ const REBASE_SOURCE = fs.readFileSync(new URL('./pages-rebase.mjs', import.meta.
  *  dotfiles (`public/.well-known`) still deploy, as before upload-pages-artifact v4 dropped them. The build runs on
  *  Node 24: Astro 7 needs ≥22.23.4, newer than many hosts' 22.x. */
 export function workflowYaml() {
-  return `# Written by Starquix (Publish → GitHub Pages). Builds the branch Publish picked (STARQUIX_PAGES_BRANCH), else the default branch, on every push.
+  return `# Written by Webdílna (Publish → GitHub Pages). Builds the branch Publish picked (STARQUIX_PAGES_BRANCH), else the default branch, on every push.
 name: Deploy to GitHub Pages
 on:
   push:

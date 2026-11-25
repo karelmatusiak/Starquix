@@ -1,3 +1,5 @@
+import { t } from '@/i18n';
+
 // Element-clipboard envelope: versioned JSON riding inside text/html behind a
 // data-sq-clipboard sentinel (browsers refuse custom MIME types).
 export const CLIPBOARD_VERSION = 1;
@@ -61,8 +63,8 @@ const escapeHtml = (s: string) =>
 
 export function encodeEnvelopeHtml(env: ClipboardEnvelope): string {
   const b64 = bytesToBase64(new TextEncoder().encode(JSON.stringify(env)));
-  const label = escapeHtml(env.roots.map(r => r.label).join(', '));
-  return `<span data-sq-clipboard="${b64}">Starquix: ${label}</span>`;
+  const label = env.roots.map(r => r.label).join(', ');
+  return `<span data-sq-clipboard="${b64}">${escapeHtml(t('Starquix: {0}', { 0: label }))}</span>`;
 }
 
 const SENTINEL_RE = /data-sq-clipboard="([A-Za-z0-9+/=]+)"/;

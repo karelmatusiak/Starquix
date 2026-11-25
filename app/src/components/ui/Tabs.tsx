@@ -3,6 +3,7 @@
  * (Ported from DesignBar/shared/Tab — THE tab implementation.)
  */
 import React from 'react';
+import { tx } from '@/i18n';
 import { cx } from './cx';
 
 export interface TabOption {
@@ -33,14 +34,14 @@ export const Tabs: React.FC<TabsProps> = ({ options, value, onChange, size = 'md
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(option.value)}
-            title={option.title || option.label}
+            title={tx(option.title || option.label)}
             className={cx(
               'relative flex items-center border-none bg-transparent cursor-pointer transition-colors font-medium',
               sizeClasses,
               isActive ? 'text-text' : 'text-text-secondary hover:text-text',
             )}
           >
-            {option.label}
+            {tx(option.label)}
             {isActive && <span className="absolute bottom-0 left-0 right-0 h-px bg-text rounded-full" />}
           </button>
         );

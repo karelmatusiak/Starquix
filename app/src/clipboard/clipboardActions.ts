@@ -17,6 +17,7 @@ import { writeClipboardHtml, readClipboardHtml } from './systemClipboard';
 import { pasteEnvelopeIntoDoc } from './pasteDoc';
 import { pasteEnvelopeIntoLocal } from './pasteLocal';
 import { getSelectionEpoch } from '@/utils/localPendingSelection';
+import { t } from '@/i18n';
 
 export interface ClipboardActionDeps {
   doc: Y.Doc;
@@ -81,11 +82,11 @@ export async function copySelection(deps: ClipboardActionDeps): Promise<boolean>
     toast: deps.toast,
   });
   if (!env) return false;
-  const label = `Starquix: ${env.roots.map((r) => r.label).join(', ')}`;
+  const label = t('Starquix: {0}', { 0: env.roots.map((r) => r.label).join(', ') });
   const ok = await writeClipboardHtml(encodeEnvelopeHtml(env), label);
   if (ok) {
     const n = env.roots.length;
-    deps.toast?.(`Copied ${n} element${n === 1 ? '' : 's'}`);
+    deps.toast?.(n === 1 ? t('Copied 1 element') : t('Copied {0} elements', { 0: n }));
   }
   return ok;
 }
@@ -107,13 +108,13 @@ export async function pasteClipboard(deps: ClipboardActionDeps): Promise<void> {
   const selectionEpoch = getSelectionEpoch(); // the keypress: reading the clipboard is async
   const html = await readClipboardHtml();
   if (html === null) {
-    deps.toast?.('Nothing to paste');
+    deps.toast?.(t('Nothing to paste'));
     return;
   }
   if (!html.includes('data-sq-clipboard')) return; // foreign clipboard content — not ours, stay silent
   const env = decodeEnvelopeHtml(html);
   if (!env) {
-    deps.toast?.("Can't paste — copied with an older Starquix version");
+    deps.toast?.(t("Can't paste — copied with an older Starquix version"));
     return;
   }
   await routePaste(env, deps, false, selectionEpoch);

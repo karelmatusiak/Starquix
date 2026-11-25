@@ -13,6 +13,7 @@
  * <Field value={slug} onChange={setSlug} error="Already taken" mono />
  */
 import React, { forwardRef, useCallback, useContext, useRef } from 'react';
+import { tx } from '@/i18n';
 import { GestureHostContext, useValueGesture } from './valueGesture';
 import { InputContainer, type InputSize } from './InputContainer';
 import { ChevronDownIcon } from '@/assets/icons';
@@ -180,7 +181,7 @@ export const Field = forwardRef<HTMLInputElement | HTMLSelectElement | HTMLTextA
 
     if (props.skeleton) return <Skeleton className={cx('w-full min-w-0 rounded-inner', SKELETON_BOX[size], containerClassName || className)} />;
 
-    const leading = leftSlot ?? icon ?? label;
+    const leading = leftSlot ?? icon ?? (typeof label === 'string' ? tx(label) : label);
 
     let trailing: React.ReactNode = props.trailing ?? rightSlot;
     if (props.as === 'select') {
@@ -207,7 +208,7 @@ export const Field = forwardRef<HTMLInputElement | HTMLSelectElement | HTMLTextA
         {prefix && <span className="text-xs text-text-secondary shrink-0 pl-2 -mr-2">{prefix}</span>}
         {props.as === 'textarea' ? (
           <textarea ref={ref as React.Ref<HTMLTextAreaElement>} value={shown} rows={props.rows ?? 4}
-            aria-label={props['aria-label']} placeholder={props.mixed ? 'Mixed' : props.placeholder} disabled={disabled}
+            aria-label={tx(props['aria-label'])} placeholder={props.mixed ? tx('Mixed') : tx(props.placeholder)} disabled={disabled}
             onChange={handleChange} onKeyDown={props.onKeyDown} onBlur={props.onBlur} onFocus={props.onFocus}
             className={cx(valueClasses, 'py-2 resize-y min-h-20')} />
         ) : props.as === 'select' ? (
@@ -216,16 +217,16 @@ export const Field = forwardRef<HTMLInputElement | HTMLSelectElement | HTMLTextA
             value={shown}
             onChange={handleChange}
             disabled={disabled}
-            aria-label={props['aria-label']}
+            aria-label={tx(props['aria-label'])}
             className={cx(valueClasses, 'cursor-pointer appearance-none')}
           >
             {/* Mixed: shown but never pickable — the placeholder option is a real value ("clear") */}
             {props.mixed
-              ? <option value="" disabled hidden>Mixed</option>
-              : props.placeholder && <option value="">{props.placeholder}</option>}
+              ? <option value="" disabled hidden>{tx('Mixed')}</option>
+              : props.placeholder && <option value="">{tx(props.placeholder)}</option>}
             {props.options.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.label}
+                {tx(option.label)}
               </option>
             ))}
           </select>
@@ -243,9 +244,9 @@ export const Field = forwardRef<HTMLInputElement | HTMLSelectElement | HTMLTextA
             title={props.title}
             readOnly={props.readOnly}
             onClick={props.onClick}
-            aria-label={props['aria-label']}
+            aria-label={tx(props['aria-label'])}
             disabled={disabled}
-            placeholder={props.mixed ? 'Mixed' : props.placeholder}
+            placeholder={props.mixed ? tx('Mixed') : tx(props.placeholder)}
             min={props.min}
             max={props.max}
             step={props.step}
@@ -261,9 +262,9 @@ export const Field = forwardRef<HTMLInputElement | HTMLSelectElement | HTMLTextA
         <div className="min-w-0">
           {field}
           {typeof error === 'string' ? (
-            <div className={cx(lg ? 'text-xs mt-1' : 'text-2xs mt-0.5', 'text-error truncate')}>{error}</div>
+            <div className={cx(lg ? 'text-xs mt-1' : 'text-2xs mt-0.5', 'text-error truncate')}>{tx(error)}</div>
           ) : (
-            caption && <div className={cx(lg ? 'text-xs mt-1' : 'text-2xs mt-0.5', 'text-text-secondary truncate')}>{caption}</div>
+            caption && <div className={cx(lg ? 'text-xs mt-1' : 'text-2xs mt-0.5', 'text-text-secondary truncate')}>{tx(caption)}</div>
           )}
         </div>
       );
