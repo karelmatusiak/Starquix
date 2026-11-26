@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect, useSyncExternalStore } from 'react';
+import { t } from '@/i18n';
 import { useSelectedElement, useSelectionContext, useTextSelection, useScannedElementsRef, useScannedElements } from '@/context/SelectionContext';
 import { useClassStore, useElementClasses } from '@/context/ClassStoreContext';
 import { useActiveState } from '@/context/StateContext';
@@ -573,9 +574,9 @@ export const DesignBar: React.FC<DesignBarProps> = ({ onClassesChange }) => {
     if (result.ok) {
       if (result.instanceId) select(result.instanceId);
       refreshComponents();
-      toast.success(`Component '${result.componentName}' created`);
+      toast.success(t("Component '{0}' created", { 0: result.componentName }));
     } else {
-      toast.error('Failed to create component');
+      toast.error(t("Failed to create component"));
     }
     setIsMakingComponent(false);
   }, [doc, key, isMakingComponent, currentPageId, builtIn, takeSnapshot, refreshComponents, select]);
@@ -730,7 +731,7 @@ export const DesignBar: React.FC<DesignBarProps> = ({ onClassesChange }) => {
         ? `${acceptedCount} ${acceptedCount === 1 ? 'change was' : 'changes were'} accepted.`
         : 'No changes were accepted.';
       const reason = error instanceof Error ? error.message : String(error);
-      toast.error(`${name}: ${accepted} Could not ${pendingStep}: ${reason}`, { id: toastId });
+      toast.error(t("{0}: {1} Could not {2}: {3}", { 0: name, 1: accepted, 2: pendingStep, 3: reason }), { id: toastId });
     } finally {
       setIsPushingLocalMaster(false);
     }
@@ -1040,7 +1041,7 @@ export const DesignBar: React.FC<DesignBarProps> = ({ onClassesChange }) => {
   const docPendingChanges = docDivergedJoined ? docDivergedJoined.split('\n').length : 0;
   const handlePushToSource = useCallback(async () => {
     if (!instanceId || !astroSource) {
-      toast.error('Push failed: no source component resolved for this selection.');
+      toast.error(t("Push failed: no source component resolved for this selection."));
       return;
     }
     const result = await pushInstanceToSource({
@@ -1054,7 +1055,7 @@ export const DesignBar: React.FC<DesignBarProps> = ({ onClassesChange }) => {
     // A discarded {ok:false} here used to be a fully silent no-op — the user
     // pressed Push, nothing happened anywhere, and nothing said why.
     if (!result.ok) {
-      toast.error(`Push failed: ${result.reason ?? 'unknown reason'}`);
+      toast.error(t("Push failed: {0}", { 0: result.reason ?? 'unknown reason' }));
       return;
     }
     // The doc write is synchronous and all-or-nothing: everything that diverged

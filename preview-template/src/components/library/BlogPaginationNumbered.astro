@@ -16,7 +16,7 @@ const next = page ? page.url.next : undefined;
 ---
 <nav aria-label="Pagination" class="flex items-center justify-center gap-2 mt-8">
   <a href={prev} class="px-3 py-2 text-sm rounded border border-gray-300 hover:bg-gray-100">
-    Previous
+    Předchozí
   </a>
   {numbers.map((n) => (
     n === current
@@ -24,6 +24,6 @@ const next = page ? page.url.next : undefined;
       : <a href={hrefFor(n)} class="px-3 py-2 text-sm rounded border border-gray-300 hover:bg-gray-100">{n}</a>
   ))}
   <a href={next} class="px-3 py-2 text-sm rounded border border-gray-300 hover:bg-gray-100">
-    Next
+    Další
   </a>
 </nav>

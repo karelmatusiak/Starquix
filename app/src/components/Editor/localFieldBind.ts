@@ -5,6 +5,7 @@
  * primitive the page binding uses). Same guards as every structural write.
  */
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 import { acquireStructuralWrite, releaseStructuralWrite } from '@/store/structuralWriteGuard';
 import { readLocalFile, writeLocalFile } from '@/utils/localElementSource';
 import { currentSourceLocation, settleAcceptedWrites } from '@/utils/acceptedSource';
@@ -41,12 +42,12 @@ export async function bindLocalField({ loc, tagName, field, fieldType, dateForma
     let before: string;
     await settleAcceptedWrites();
     try { before = await readLocalFile(at.file); }
-    catch { toast.error('Could not read the component file'); return { ok: false, reason: 'could not read the component file' }; }
+    catch { toast.error(t("Could not read the component file")); return { ok: false, reason: 'could not read the component file' }; }
     let after: string;
     try { after = await applyFieldBinding(before, at, tagName, field, fieldType, dateFormat); }
     catch (err) {
       const detail = err instanceof Error ? err.message : 'could not bind the field';
-      toast.error(`Could not bind the field — ${detail}`);
+      toast.error(t("Could not bind the field — {0}", { 0: detail }));
       return { ok: false, reason: detail };
     }
     if (after === before) return { ok: true };

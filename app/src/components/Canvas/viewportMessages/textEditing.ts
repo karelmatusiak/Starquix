@@ -4,6 +4,7 @@
  * the iframe to the parent document.
  */
 import * as Y from 'yjs';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { parseKey, type EditorCommand } from '@/store/types';
 import { acceptEditorCommands } from '@/store/commandGesture';
@@ -306,7 +307,7 @@ export function handleMarkupChanged(ctx: ViewportMessageContext, payload: unknow
           clearLinkMarkupOverride(ctx.env.doc, p.key, p.innerHTML);
           console.error('[ViewportFrame] Markup write failed:', err);
           if (!/timeout/i.test(String((err as Error)?.message ?? ''))) {
-            toast.error('Could not save the link to the file — it may be lost on reload.');
+            toast.error(t("Could not save the link to the file — it may be lost on reload."));
           }
         });
       } else {

@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { t } from '@/i18n';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Row, Button, OperationNotice } from '@/components/ui';
@@ -86,7 +87,7 @@ export const MediaSection = memo(function MediaSection() {
         takeSnapshot();
         dispatch({ type: 'UPDATE_IMAGE_ATTRIBUTE', elementId: selectedKey, attribute: 'src', value: entry.applySrc });
         syncImageAttrToIframe(selectedKey, 'src', entry.applySrc);
-        toast.success(`Set image to ${entry.applySrc}`);
+        toast.success(t("Set image to {0}", { 0: entry.applySrc }));
         return;
       }
       // Content-bound astro <Image> — rebind the DATA (local-only: the WC
@@ -102,7 +103,7 @@ export const MediaSection = memo(function MediaSection() {
             reverse: () => { void repointLocalBoundAsset(projectId, newAsset, oldPath); },
             forward: () => { void repointLocalBoundAsset(projectId, oldPath, newAsset); },
           });
-          toast.success('Image replaced — content data updated');
+          toast.success(t("Image replaced — content data updated"));
         } catch (error) {
           toast.error(error instanceof Error ? error.message : 'Replace failed');
         }

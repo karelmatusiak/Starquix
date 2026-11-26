@@ -517,7 +517,7 @@ describe('materializeLibraryComponent', () => {
     expect(result).toMatchObject({ path: 'src/components/Hero.astro', reused: false });
     await project.flush();
     expect(project.read('src/components/Hero.astro')).toBe(expectedHero);
-    expect(expectedHero).toContain('The visual editor for Astro'); // the Starquix theme's Hero (Classic: library/classic/)
+    expect(expectedHero).toContain('Chléb z\u00A0pece'); // the Webdílna theme's Hero (Classic: library/classic/)
     expect(expectedHero).not.toContain('<div id="root"></div>');
     expect(fetchCalls.some((call) => call.startsWith('/__sq/component-html'))).toBe(false);
   });

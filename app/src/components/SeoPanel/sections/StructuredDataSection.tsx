@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Row, Field } from '@/components/ui';
 import { CodeBracesIcon } from '@/assets/icons';
@@ -41,7 +42,7 @@ export const StructuredDataSection: React.FC<{ pageFile: string; page: PageSeoSt
   const save = useCallback(async (json: string) => {
     takeSnapshot();
     try { await saveStructuredData(pageFile, json, claimSnapshot(), posts); }
-    catch (e) { toast.error(`Structured data was not saved: ${e instanceof Error ? e.message : String(e)}`); }
+    catch (e) { toast.error(t("Structured data was not saved: {0}", { 0: e instanceof Error ? e.message : String(e) })); }
     setNonce((n) => n + 1);
   }, [pageFile, posts, takeSnapshot, claimSnapshot]);
 

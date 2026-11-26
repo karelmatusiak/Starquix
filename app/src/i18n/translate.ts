@@ -9,7 +9,7 @@ export function czechTypography(input: string): string {
     .replace(/(^|[\s„"(\[])([KkSsVvZzOoUuAaIi])\s+(?=\S)/g, `$1$2${NBSP}`);
 }
 
-function interpolate(template: string, vars?: Record<string, string | number>): string {
+function interpolate(template: string, vars?: Record<string, unknown>): string {
   if (!vars) return template;
   return template.replace(/\{(\w+)\}/g, (full, key) => {
     if (!Object.prototype.hasOwnProperty.call(vars, key) || vars[key] == null) return full;
@@ -34,7 +34,7 @@ export function createT(cs: Record<string, string>, en: Record<string, string> =
     return { text: message, typed: false };
   }
 
-  function t(message: string, vars?: Record<string, string | number>): string {
+  function t(message: string, vars?: Record<string, unknown>): string {
     if (typeof message !== 'string' || message === '') return message;
     const hit = lookup(message);
     const filled = interpolate(hit.text, vars);

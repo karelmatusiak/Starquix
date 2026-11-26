@@ -6,6 +6,7 @@
  * undoable write (the same primitive as the blog binding).
  */
 import { useCallback, useEffect, useState } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Row, SegmentedControl } from '@/components/ui';
 import { useLocalProjectPath } from '@/hooks/useLocalProjectPath';
@@ -75,7 +76,7 @@ export function PostLayoutBlock({ file: routeFile, onChange, className = 'px-2 p
       // so it is a plain file write, like the route scaffold's.
       const r = routeFile
         ? await writeLocalFile(state.file, after).then(() => ({ ok: true as const }), (err: unknown) => {
-          toast.error(`Could not update the post layout — ${err instanceof Error ? err.message : 'the file was not changed'}`);
+          toast.error(t("Could not update the post layout — {0}", { 0: err instanceof Error ? err.message : 'the file was not changed' }));
           return { ok: false as const };
         })
         : await commitWholeLocalFile({ file: state.file, before, after, pushUndo: pushStructuralUndo, failure: 'Could not update the post layout' });

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { saveMediaEdit, readMediaInvocation } from '@/core/postmedia/saveMediaEdit';
 import { requestPreviewReload } from '@/components/Canvas/reloadPreview';
@@ -38,7 +39,7 @@ export function useInvocation(opts: {
       if (next === null) {
         // B2/B7: the markup is hand-written (an expression or a spread) — we
         // refuse rather than guess at the user's code.
-        toast.error('Could not edit this media — its markup is hand-written');
+        toast.error(t("Could not edit this media — its markup is hand-written"));
         return;
       }
       requestPreviewReload();

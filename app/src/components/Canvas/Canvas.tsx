@@ -642,7 +642,7 @@ export function Canvas({ activeDragId, isReorderPending, localInstance, runtimeF
         penPath: result.penPath,
         astroSource: blogInit.astroSource,
       },
-    }); } catch (error) { console.error('Draw was not saved', error); toast.error('Draw was not saved'); return; }
+    }); } catch (error) { console.error('Draw was not saved', error); toast.error(t("Draw was not saved")); return; }
 
     // Select the newly drawn element in SelectionContext so:
     // 1. Ancestors are auto-expanded in the layers panel
@@ -687,14 +687,14 @@ export function Canvas({ activeDragId, isReorderPending, localInstance, runtimeF
       penPath: result.penPath,
       staticMarkup: result.staticMarkup,
       classes: result.classes,
-    }); } catch (error) { console.error('Pen edit was not saved', error); toast.error('Pen edit was not saved'); }
+    }); } catch (error) { console.error('Pen edit was not saved', error); toast.error(t("Pen edit was not saved")); }
   }, [editingPenKey, dispatch, takeSnapshot]);
 
   const handlePenElementDeleted = useCallback(async () => {
     if (!editingPenKey) return;
     takeSnapshot();
     try { await dispatch({ type: 'REMOVE_ELEMENT', elementId: editingPenKey }); }
-    catch (error) { console.error('Pen deletion was not saved', error); toast.error('Pen deletion was not saved'); return; }
+    catch (error) { console.error('Pen deletion was not saved', error); toast.error(t("Pen deletion was not saved")); return; }
     setEditingPenKey(null);
   }, [editingPenKey, dispatch, takeSnapshot]);
 

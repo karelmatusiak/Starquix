@@ -5,6 +5,7 @@
  * Settings). Never a prompt; a failure toasts once and leaves the slot bare.
  */
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 import { contentOps } from '@/core/collections/content-ops';
 import { fetchLocalPageSource } from '@/utils/localPageSync';
 import { sortFor, UNBOUND } from '@/utils/blogBinding';
@@ -25,7 +26,7 @@ export async function bindInsertedBlogSlot({ pageFile, localProjectPath, pushUnd
     const source = await fetchLocalPageSource(localProjectPath, pageFile);
     if (source === null) return;
     const r = await scaffoldBlogCollection({ pageFile, pageSource: source });
-    if (!r.ok) { toast.error(`Could not set up a blog collection — ${r.reason}`); return; }
+    if (!r.ok) { toast.error(t("Could not set up a blog collection — {0}", { 0: r.reason })); return; }
     name = r.collection;
     // The schema comes from the files the scaffold just wrote (one source).
     collections = await contentOps.fetchCollections().catch(() => []);

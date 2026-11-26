@@ -15,6 +15,7 @@ import React, {
   useState,
   useSyncExternalStore
 } from 'react';
+import { t } from '@/i18n';
 import * as Y from 'yjs';
 import { useEditorDoc, useYjsValue } from '@/store/hooks';
 import { applyCommand } from '@/store/commands';
@@ -649,7 +650,7 @@ export const ClassStoreProvider: React.FC<ClassStoreProviderProps> = ({
         setState(stateRef.current);
         const message = error instanceof Error ? error.message : String(error);
         setStorageIssue({ key: members[0].key, operationId, message });
-        toast.error(`Style not saved: ${message}`);
+        toast.error(t("Style not saved: {0}", { 0: message }));
       }
       for (const m of members) {
         if (projectId) stashClear(projectId, m.key, operationId);

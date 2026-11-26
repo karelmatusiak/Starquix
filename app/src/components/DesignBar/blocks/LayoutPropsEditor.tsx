@@ -1,4 +1,5 @@
 import { TrashIcon as SharedTrashIcon } from '@/assets/icons';
+import { t } from '@/i18n';
 /**
  * LayoutPropsEditor — the shared layout-prop UI, reused by BOTH surfaces:
  *
@@ -60,10 +61,10 @@ export const LayoutPropsEditor: FC<LayoutPropsEditorProps> = ({
     const name = newProp.trim();
     if (!name) return;
     if (isReservedLayoutProp(name) || !/^[A-Za-z][A-Za-z0-9_]*$/.test(name)) {
-      toast.error('Use a non-reserved name (letters/digits/_; not title or description).');
+      toast.error(t("Use a non-reserved name (letters/digits/_; not title or description)."));
       return;
     }
-    if (propDefs.some((p) => p.name === name)) { toast.error(`"${name}" already exists.`); return; }
+    if (propDefs.some((p) => p.name === name)) { toast.error(t("\"{0}\" already exists.", { 0: name })); return; }
     setNewProp('');
     const r = await mutateLayoutProp(layoutName, 'add', name);
     if (!r.ok) toast.error(r.error);

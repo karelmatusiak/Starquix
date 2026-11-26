@@ -1,5 +1,6 @@
 import { FolderPlusIcon as SharedFolderPlusIcon, SwatchesIcon as SharedSwatchesIcon } from '@/assets/icons';
 import React, { Fragment, useState, useCallback, useMemo, useEffect, useRef, useLayoutEffect } from 'react';
+import { t } from '@/i18n';
 import { createPortal } from 'react-dom';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useComponentLibrary, type ScannedComponent } from '@/hooks/useComponentLibrary';
@@ -374,7 +375,7 @@ function ComponentNode({ item, depth, isActive, isSelected, isEditing, ctx, onSe
           <input
             ref={inputRef}
             type="text"
-            value={editValue}
+            value={isEditing ? editValue : t(item.name)}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={onEditKeyDown}
             onBlur={commitEdit}
@@ -507,7 +508,7 @@ function FolderNode({ item, depth, ctx }: FolderNodeProps) {
           <input
             ref={inputRef}
             type="text"
-            value={editValue}
+            value={isEditing ? editValue : t(item.name)}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={onEditKeyDown}
             onBlur={commitEdit}
@@ -610,7 +611,7 @@ function VariableCollectionRow({
           <input
             ref={inputRef}
             type="text"
-            value={editValue}
+            value={isEditing ? editValue : t(name)}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') { e.preventDefault(); commitEdit(); }
@@ -688,7 +689,7 @@ function LayoutRow({ layout, selected, disabled, onSelect, onDelete }: {
           { type: 'chevron', expanded: false, visible: false },
           { type: 'icon', icon: <ComponentIcon className="w-4 h-4 text-dynamic" /> },
         ]}
-        title={<span className="text-xs text-dynamic truncate">{layout.name}</span>}
+        title={<span className="text-xs text-dynamic truncate">{t(layout.name)}</span>}
         className="h-7 px-2 rounded gap-1 cursor-pointer"
         onClick={onSelect}
         onContextMenu={(e) => {
@@ -1006,7 +1007,7 @@ export function AssetsPanel({ activeComponentPath, onSelectComponent, onClearCom
       : await componentFiles.createLayout(name, astroContent);
     // No snapshot on failure — an undo entry for a file that was never written
     // would delete whatever else is sitting at that name.
-    if (!created) { toast.error('Could not create the layout'); return; }
+    if (!created) { toast.error(t("Could not create the layout")); return; }
 
     if (!durable) takeSnapshot({
       reverse: () => { void componentFiles.deleteLayout(name); },
@@ -1033,7 +1034,7 @@ export function AssetsPanel({ activeComponentPath, onSelectComponent, onClearCom
       : await componentFiles.inlineDeleteLayout(l.name);
     // null = refused (a file uses it twice) or the group rolled back. Nothing
     // on disk changed, so there is nothing to undo.
-    if (previous === null) { toast.error('Could not delete the layout'); return; }
+    if (previous === null) { toast.error(t("Could not delete the layout")); return; }
     if (activeLayoutDeleteSelection.current === layoutToScannedComponent(l).path) onClearComponent?.();
     if (!durable) takeSnapshot({
       reverse: () => {

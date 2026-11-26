@@ -6,6 +6,7 @@
  * else is written anywhere.
  */
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 import { viteStructuralWriter } from '@/services/ViteStructuralWriter';
 import { fetchLocalPageRoutes, fetchLocalPageSource, isLocalPageInSync, moveLocalPageFile } from '@/utils/localPageSync';
 import { acquireStructuralWrite, tryAcquireStructuralWrite, releaseStructuralWrite } from '@/store/structuralWriteGuard';
@@ -105,7 +106,7 @@ export async function bindLocalBlogSlot({ pageFile, localProjectPath, binding, p
     await settleAcceptedWrites();
     const before = await fetchLocalPageSource(localProjectPath, pageFile);
     if (before === null) {
-      if (!quiet) toast.error('Could not read the page file');
+      if (!quiet) toast.error(t("Could not read the page file"));
       return { ok: false, reason: 'could not read the page file' };
     }
     // Numbered pagination lives in `[...page].astro`; everything else in the
@@ -135,7 +136,7 @@ export async function bindLocalBlogSlot({ pageFile, localProjectPath, binding, p
     // The chrome the page now imports must exist in the project (reused when it does).
     if (chromeComponent && binding.pagination.kind !== 'none') {
       const m = await materializeLibraryComponent(chromeComponent, localProjectPath);
-      if (!m.ok) { toast.error(`Could not add ${chromeComponent.name} to your project — ${m.reason}`); return { ok: false, reason: m.reason }; }
+      if (!m.ok) { toast.error(t("Could not add {0} to your project — {1}", { 0: chromeComponent.name, 1: m.reason })); return { ok: false, reason: m.reason }; }
     }
     // The card is a NEW file the page now imports — created first (not part of
     // the page's undo: an unused card is harmless, a page importing a missing
@@ -146,7 +147,7 @@ export async function bindLocalBlogSlot({ pageFile, localProjectPath, binding, p
         await rewriteLocalFile(cardFile, (existing) => existing ?? cardCopy(blogCard ?? DEFAULT_CARD, cardFile));
       } catch (err) {
         const detail = err instanceof Error ? err.message : 'the card was not written';
-        toast.error(`Could not add the ${binding.collection} card — ${detail}`);
+        toast.error(t("Could not add the {0} card — {1}", { 0: binding.collection, 1: detail }));
         return { ok: false, reason: detail };
       }
     }
@@ -166,7 +167,7 @@ export async function bindLocalBlogSlot({ pageFile, localProjectPath, binding, p
       // Undo the write so the page is never left paginated at a non-paginated path.
       try { await viteStructuralWriter.writeRestoreRegion({ file: pageFile, line: 1, column: 1 }, fileLineSpan(after), before); } catch { /* reported below */ }
       const detail = err instanceof Error ? err.message : 'the page could not be moved';
-      toast.error(`Could not move the page — ${detail}`);
+      toast.error(t("Could not move the page — {0}", { 0: detail }));
       return { ok: false, reason: detail };
     }
     return res;
@@ -226,10 +227,10 @@ export async function commitWholeLocalFile({ file, before, after, pushUndo, fail
     res = await viteStructuralWriter.writeRestoreRegion(loc, fileLineSpan(before), after, origin);
   } catch (err) {
     const detail = err instanceof Error ? err.message : 'the file was not changed';
-    toast.error(`${failure} — ${detail}`);
+    toast.error(t("{0} — {1}", { 0: failure, 1: detail }));
     return { ok: false, reason: detail };
   }
-  if (!res || !res.success) { toast.error(`${failure} — the file was not changed`); return { ok: false, reason: 'the file was not changed' }; }
+  if (!res || !res.success) { toast.error(t("{0} — the file was not changed", { 0: failure })); return { ok: false, reason: 'the file was not changed' }; }
   // Redo = the rewrite again, then the move; undo = restore the original
   // bytes AT THE MOVED PATH (where the file is by then), then move back.
   // Both directions write-then-move: a bridge write issued after a route

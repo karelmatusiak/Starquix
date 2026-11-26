@@ -1,4 +1,5 @@
 import type { AIFailureCode } from './types';
+import { t } from '@/i18n';
 
 /** Only structured provider evidence is classified. Exception text is diagnostic data. */
 export function classifyAIFailure(error: unknown): AIFailureCode {
@@ -24,13 +25,13 @@ export function classifyAIFailure(error: unknown): AIFailureCode {
 
 export function aiFailureCopy(failure: AIFailureCode | undefined): { title: string; detail: string; settings?: boolean } {
   switch (failure) {
-    case 'configuration': return { title: 'Connect an AI provider to continue.', detail: 'Your prompt is kept here. Add a provider connection in AI settings.', settings: true };
-    case 'authorization': return { title: 'The provider did not accept this connection.', detail: 'Check your API key and provider access in AI settings.', settings: true };
-    case 'credits': return { title: 'The provider requires more credits for this request.', detail: 'Review your provider account or choose another configured provider in AI settings.', settings: true };
-    case 'rate-limit': return { title: 'The provider’s request limit was reached.', detail: 'Wait before sending another request, or choose another configured model in AI settings.', settings: true };
-    case 'connection': return { title: 'The AI provider is unavailable.', detail: 'Check your connection and provider availability before sending another request.' };
-    case 'save': return { title: 'Some changes have not reached the project files yet.', detail: 'Your edits are stored in this browser. Wait for the preview to catch up before continuing.' };
-    default: return { title: 'The AI request could not finish.', detail: 'Review any changes already made before sending another request.' };
+    case 'configuration': return { title: t('Connect an AI provider to continue.'), detail: t('Your prompt is kept here. Add a provider connection in AI settings.'), settings: true };
+    case 'authorization': return { title: t('The provider did not accept this connection.'), detail: t('Check your API key and provider access in AI settings.'), settings: true };
+    case 'credits': return { title: t('The provider requires more credits for this request.'), detail: t('Review your provider account or choose another configured provider in AI settings.'), settings: true };
+    case 'rate-limit': return { title: t('The provider’s request limit was reached.'), detail: t('Wait before sending another request, or choose another configured model in AI settings.'), settings: true };
+    case 'connection': return { title: t('The AI provider is unavailable.'), detail: t('Check your connection and provider availability before sending another request.') };
+    case 'save': return { title: t('Some changes have not reached the project files yet.'), detail: t('Your edits are stored in this browser. Wait for the preview to catch up before continuing.') };
+    default: return { title: t('The AI request could not finish.'), detail: t('Review any changes already made before sending another request.') };
   }
 }
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Row, Dropzone } from '@/components/ui';
 import { ShareIcon } from '@/assets/icons';
@@ -54,7 +55,7 @@ export const SharingSection: React.FC<Props> = ({ state, rendered, save, post })
         : (await uploadLocalAssetFile(projectId, file)).src;
       save('image', src);
     } catch (error) {
-      toast.error(`Share image was not uploaded: ${error instanceof Error ? error.message : String(error)}`);
+      toast.error(t("Share image was not uploaded: {0}", { 0: error instanceof Error ? error.message : String(error) }));
     } finally {
       setUploading(false);
     }

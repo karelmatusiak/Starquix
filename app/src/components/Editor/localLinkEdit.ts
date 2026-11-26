@@ -4,6 +4,7 @@
  * whole-file write with a whole-file ⌘Z. Files are truth: nothing goes in the doc.
  */
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 import { markLocalScanStaleAfterWrite } from '@/utils/localPageSync';
 import { captureLocalElementOrigin, isCrossFileAtOrigin, notifyLocalCrossFileWrite } from '@/utils/localWriteScope';
 import { acquireStructuralWrite, releaseStructuralWrite } from '@/store/structuralWriteGuard';
@@ -39,7 +40,7 @@ async function rewriteLinkFile(
       before = await readLocalFile(file);
       after = await edit(before, at, insideNow);
     } catch (err) {
-      toast.error(`${failure} — ${err instanceof Error ? err.message : 'the file was not changed'}`);
+      toast.error(t("{0} — {1}", { 0: failure, 1: err instanceof Error ? err.message : 'the file was not changed' }));
       return false;
     }
     if (after === before) return true;

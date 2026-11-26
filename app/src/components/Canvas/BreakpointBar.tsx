@@ -1,4 +1,5 @@
 import { memo, useRef } from 'react';
+import { t } from '@/i18n';
 import { useHoverMenu } from './hoverMenu';
 import { GridChip } from './GridChip';
 import { Button, Menu, MenuItem } from '@/components/ui';
@@ -104,7 +105,7 @@ export const BreakpointBar = memo(function BreakpointBar({ children }: { childre
         ))}
       </HoverMenuButton>
       {/* Screen height: one per device class (all desktop widths share it). */}
-      <HoverMenuButton label={`H ${screenH}`} detail={device} menuWidth={208}>
+      <HoverMenuButton label={`H ${screenH}`} detail={t(device)} menuWidth={208}>
         {SCREEN_PRESETS[device].map((p) => (
           <MenuItem
             key={p.height}

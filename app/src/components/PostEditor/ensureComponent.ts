@@ -7,13 +7,14 @@
  * into src/components/sq/ (and upgrades stale copies with a .bak).
  */
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 import { localFetch } from '../../utils/sqLocalBase';
 import { projectIdFromPath } from '@/utils/localMode';
 import { settleSourceWrites } from '@/services/durableEdits/sourceMaterialization';
 
 export async function ensureSqComponent(projectPath: string | null, name: string): Promise<string | null> {
   if (!projectPath) {
-    toast.error(`Could not add ${name} — the project is not open yet.`);
+    toast.error(t("Could not add {0} — the project is not open yet.", { 0: name }));
     return null;
   }
   await settleSourceWrites(projectIdFromPath(projectPath)); // an upgrade rewrites the file

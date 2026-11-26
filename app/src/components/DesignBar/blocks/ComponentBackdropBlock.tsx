@@ -5,6 +5,7 @@
  * the component view, never rendered by the site. One journaled write, one ⌘Z.
  */
 import { useEffect, useState } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui';
 import { useUndoContext } from '@/context/UndoContext';
@@ -31,7 +32,7 @@ export function ComponentBackdropBlock({ file }: { file: string }) {
       await rewriteLocalFile(file, (src) => setBackdrop(src ?? '', next), claimSnapshot());
       setColor(next);
     } catch (err) {
-      toast.error(`Could not set the backdrop — ${err instanceof Error ? err.message : 'nothing was changed'}`);
+      toast.error(t("Could not set the backdrop — {0}", { 0: err instanceof Error ? err.message : 'nothing was changed' }));
     }
   };
 

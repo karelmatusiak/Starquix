@@ -1,4 +1,5 @@
 import { memo, useCallback, useState } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { useContentCollections } from '@/hooks/useContentCollections';
 import { useYjsValue, useEditorDoc } from '@/store/hooks';
@@ -37,7 +38,7 @@ export const CollectionsPanel = memo(function CollectionsPanel() {
       try {
         await createLocalCollection(collectionName, localPath);
       } catch (err) {
-        toast.error(`Could not create the collection — ${err instanceof Error ? err.message : 'write failed'}`);
+        toast.error(t("Could not create the collection — {0}", { 0: err instanceof Error ? err.message : 'write failed' }));
       }
       return;
     }
@@ -51,7 +52,7 @@ export const CollectionsPanel = memo(function CollectionsPanel() {
       }
       await createCollectionOnDisk(collectionName, collection);
     } catch (error) {
-      toast.error(`Could not finish creating the collection — ${error instanceof Error ? error.message : 'storage failed'}`);
+      toast.error(t("Could not finish creating the collection — {0}", { 0: error instanceof Error ? error.message : 'storage failed' }));
     }
   }, [doc, takeSnapshot, claimSnapshot, currentPageId, localPath]);
 

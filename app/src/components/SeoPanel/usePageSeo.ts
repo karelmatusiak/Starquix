@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { useUndoContext } from '@/context/UndoContext';
 import { useLocalProjectPath } from '@/hooks/useLocalProjectPath';
@@ -60,7 +61,7 @@ export function usePageSeo() {
     try {
       await savePageSeo(pageFile, field, value, claimSnapshot(), post);
     } catch (error) {
-      toast.error(`SEO change was not saved: ${error instanceof Error ? error.message : String(error)}`);
+      toast.error(t("SEO change was not saved: {0}", { 0: error instanceof Error ? error.message : String(error) }));
     }
     setNonce((n) => n + 1); // re-read: the field shows what the file now says
   }, [pageFile, post, takeSnapshot, claimSnapshot]);

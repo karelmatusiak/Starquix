@@ -161,7 +161,7 @@ const useCases = [
     // Hover mounts the card's Add overlay under the pointer; click that button, not the card.
     const card = page.getByTestId('template-item').filter({ has: page.getByText('Hero', { exact: true }) }).first();
     await card.hover(); await card.getByRole('button', { name: 'Add', exact: true }).click();
-    await ctx.preview().getByRole('heading', { name: 'Build your next Astro masterpiece', exact: true }).first().waitFor({ timeout: 30_000 });
+    await ctx.preview().getByRole('heading', { name: /Čerstvý chleba/ }).first().waitFor({ timeout: 30_000 });
   }, after: ctx => onDisk(ctx, s => s.includes('<Hero'), 'Hero') },
   // images UC2: Fill block → Upload image → the canvas shows the new file, the source references it.
   // Runs AFTER the structural journeys on purpose: duplicate/delete/undo/redo/reorder/draw/insert leave

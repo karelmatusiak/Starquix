@@ -1,4 +1,5 @@
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 
 /** One toast per failed source action, carrying the REAL cause when there is
  * one. (8b4afaff hid every cause behind "was not confirmed. Check saving
@@ -30,7 +31,7 @@ export function setSaveConflictToastUp(up: boolean): void { saveConflictToastUp 
  *  internal reason — callers log that — and nothing while the save-conflict
  *  toast already explains it (HN report 2026-11-09: one cause, one message). */
 export function toastComponentOpenFailure(name: string): void {
-  if (!saveConflictToastUp) toast.error(`Couldn't open ${name}. Try again.`);
+  if (!saveConflictToastUp) toast.error(t("Couldn't open {0}. Try again.", { 0: name }));
 }
 
 /** Refusals that mean "the canvas shows bytes the file no longer has" — a
