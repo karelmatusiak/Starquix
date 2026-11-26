@@ -7,6 +7,7 @@
  *   anything else                the project moved on: drop with the existing toast — newest wins, never a blind splice
  */
 import { useEffect, useRef } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { stashClear, stashEntries } from '@/services/gestureStash';
 
@@ -36,7 +37,7 @@ export function useGestureStashReplay(
         if (committed === entry.classes) { stashClear(projectId, key); continue; }
         if (committed === (entry.baseline ?? '')) { void latest.current.setClasses(key, entry.classes); continue; }   // cleared at acceptance
         stashClear(projectId, key);
-        toast.error('An unsaved style change was discarded: the project changed since.');
+        toast.error(t("An unsaved style change was discarded: the project changed since."));
       }
     };
     const tick = () => {

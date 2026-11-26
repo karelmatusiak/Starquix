@@ -11,6 +11,7 @@
  */
 
 import { useState, useCallback, useMemo, useRef, useEffect, type FC } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Button, Field, Row } from '@/components/ui';
 import { Popover, MenuItem } from '@/components/ui';
@@ -203,7 +204,7 @@ const ElementLinkBlock: FC<LinkBlockProps> = ({
   // false = the link stays what it was (an emptied field, a refused write)
   const commitHref = useCallback(async (value: string): Promise<boolean> => {
     const next = sanitizeUrl(value);
-    if (next === null) toast.error('That link is not allowed');
+    if (next === null) toast.error(t("That link is not allowed"));
     if (!next) {
       setHref(committedHrefRef.current ?? '');
       return false;

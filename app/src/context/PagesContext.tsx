@@ -1,4 +1,5 @@
 import { sourceActionFailure, type SourceAction } from '@/utils/sourceActionFeedback';
+import { t } from '@/i18n';
 /**
  * Pages Context
  *
@@ -283,7 +284,7 @@ export const PagesProvider: React.FC<PagesProviderProps> = ({ children }) => {
       dispatch,
       takeSnapshot,
       pageId,
-    }).catch(error => { console.error('Home page edit failed', error); toast.error('Home page was not saved'); });
+    }).catch(error => { console.error('Home page edit failed', error); toast.error(t("Home page was not saved")); });
   }, [doc, projectId, dispatch, takeSnapshot]);
 
   const movePage = useCallback(async (pageId: string, newParentId: string | null, index: number) => {
@@ -294,7 +295,7 @@ export const PagesProvider: React.FC<PagesProviderProps> = ({ children }) => {
 
     takeSnapshot();
     await dispatch({ type: 'MOVE_PAGE', pageId, newParentId, index })
-      .catch(error => { console.error('Page move failed', error); toast.error('Page order was not saved'); });
+      .catch(error => { console.error('Page move failed', error); toast.error(t("Page order was not saved")); });
   }, [projectId, dispatch, takeSnapshot]);
 
   // Gap 26: a local project's root order lives on its project row (src/pages

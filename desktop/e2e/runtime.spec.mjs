@@ -69,7 +69,7 @@ test('new project: library insert reaches disk and the immediate ZIP', async ({}
     // Empty scaffold: the frame stays transparent until it has content; wait for the first scan.
     await expect(page.getByText('No elements on page', { exact: true })).toBeVisible({ timeout: BOOT });
     // A new project starts on the Starquix theme (⌘K theme picker); its Hero heading:
-    const heading = preview(page).getByRole('heading', { name: 'The visual editor for Astro', exact: true }).first();
+    const heading = preview(page).getByRole('heading', { name: 'Chléb z\u00A0pece', exact: true }).first();
     // The editor refuses a structural write until its first rescan ("retry in a moment"): pick again if refused.
     for (let attempt = 0; attempt < 3 && !await heading.isVisible(); attempt++) {
       await page.getByTestId('add-component-button').click();
@@ -85,7 +85,7 @@ test('new project: library insert reaches disk and the immediate ZIP', async ({}
     await fs.access(path.join(temp, 'projects', id, 'src/components/Hero.astro'));
     const zip = await exportZip(page, temp, info, 'desktop-new.zip');
     expect(await zip.file('src/pages/index.astro').async('string')).toContain('<Hero');
-    expect(await zip.file('src/components/Hero.astro').async('string')).toContain('The visual editor for Astro');
+    expect(await zip.file('src/components/Hero.astro').async('string')).toContain('Chléb z\u00A0pece');
   } catch (error) { await fail(app, temp, info, error); }
   finally { await app?.close(); await fs.rm(temp, { recursive: true, force: true, maxRetries: 10 }); }
 });

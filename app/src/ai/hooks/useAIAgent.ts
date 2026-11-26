@@ -2,6 +2,7 @@
 // Tool-calling AI agent hook. Autonomous command execution via AI SDK tool use.
 
 import { useCallback, useRef } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { useDispatch, useYjsValue, useEditorDoc } from '@/store';
 import { useUndoContext } from '@/context/UndoContext';
@@ -56,15 +57,15 @@ export type FinishState = 'completed' | 'needs-continue' | 'failed';
  * and a silent-but-successful run gets an explicit action count.
  */
 export function resolveFinishState(m: { finishReason: string; stepsUsed: number; stepCap: number; toolCalls: number; fullText: string }): { state: FinishState; fallbackText: string } {
-  if (m.finishReason === 'error') return { state: 'failed', fallbackText: 'The run failed.' };
-  if (m.stepsUsed >= m.stepCap) return { state: 'needs-continue', fallbackText: `Stopped at the ${m.stepCap}-step limit with work remaining.` };
-  if (!m.fullText && m.toolCalls > 0) return { state: 'completed', fallbackText: `Finished — ${m.toolCalls} action${m.toolCalls !== 1 ? 's' : ''} executed (no summary given).` };
-  if (!m.fullText) return { state: 'completed', fallbackText: 'No actions were taken. Try rephrasing the request.' };
+  if (m.finishReason === 'error') return { state: 'failed', fallbackText: t('The run failed.') };
+  if (m.stepsUsed >= m.stepCap) return { state: 'needs-continue', fallbackText: t('Stopped at the {0}-step limit with work remaining.', { 0: m.stepCap }) };
+  if (!m.fullText && m.toolCalls > 0) return { state: 'completed', fallbackText: t('Finished — {0} action{1} executed (no summary given).', { 0: m.toolCalls, 1: m.toolCalls !== 1 ? 's' : '' }) };
+  if (!m.fullText) return { state: 'completed', fallbackText: t('No actions were taken. Try rephrasing the request.') };
   return { state: 'completed', fallbackText: '' };
 }
 
 /** Prompt sent when the user clicks Continue on a needs-continue message. */
-const CONTINUE_PROMPT = 'Continue: finish the remaining items from your plan. Re-check the action log above for what is already done.';
+const CONTINUE_PROMPT = t('Continue: finish the remaining items from your plan. Re-check the action log above for what is already done.');
 
 /** A capped run resumes itself this many times per user prompt before falling
  *  back to the manual Continue button (runaway/cost bound: 4×stepCap total). */
@@ -515,7 +516,7 @@ export function useAIAgent(
 
               if (state !== 'failed' && toolCallLog.length > 0) {
                 const successCount = toolCallLog.filter(t => t.result.success).length;
-                toast.success(`Executed ${successCount} action${successCount !== 1 ? 's' : ''}`);
+                toast.success(t("Executed {0} action{1}", { 0: successCount, 1: successCount !== 1 ? 's' : '' }));
               }
 
               // Big tasks: resume a step-capped run automatically instead of
@@ -629,164 +630,162 @@ export function formatToolCallAction(toolName: string, args: Record<string, unkn
       const parts: string[] = [];
       if (args.classes !== undefined) parts.push('classes');
       if (args.textContent !== undefined) parts.push('text');
-      return `Updating ${parts.join(' & ')} on ${args.sourceKey}`;
+      return t("Updating {0} on {1}", { 0: parts.join(' & '), 1: args.sourceKey });
     }
     case 'add_page': {
       const page = (args.page as Record<string, unknown>) || args;
-      return `Creating page "${page?.name || 'Untitled'}"`;
+      return t("Creating page \"{0}\"", { 0: page?.name || 'Untitled' });
     }
     case 'update_page':
-      return `Renaming page to "${args.name}"`;
+      return t("Renaming page to \"{0}\"", { 0: args.name });
     case 'remove_page':
-      return `Deleting page ${args.pageId}`;
+      return t("Deleting page {0}", { 0: args.pageId });
     case 'read_source_elements':
-      return `Reading available source elements`;
+      return t("Reading available source elements");
     case 'read_page_content':
-      return `Reading page elements`;
+      return t("Reading page elements");
     case 'read_component_content':
-      return `Reading element markup`;
+      return t("Reading element markup");
     case 'read_element_html':
-      return args.sourceKey ? `Reading HTML for ${args.sourceKey}` : `Reading page HTML structure`;
+      return args.sourceKey ? t("Reading HTML for {0}", { 0: args.sourceKey }) : t("Reading page HTML structure");
     case 'verify_layout':
-      return `Verifying layout of ${(args.keys as string[])?.length ?? 0} element${((args.keys as string[])?.length ?? 0) !== 1 ? 's' : ''}`;
+      return t("Verifying layout of {0} element{1}", { 0: (args.keys as string[])?.length ?? 0, 1: ((args.keys as string[])?.length ?? 0) !== 1 ? 's' : '' });
     case 'add_page_content':
-      return `Adding ${(args.type as string) || 'content'} to page`;
+      return t("Adding {0} to page", { 0: (args.type as string) || 'content' });
     case 'read_variables':
-      return `Reading design variables`;
+      return t("Reading design variables");
     case 'update_variable_value':
-      return `Updating variable ${args.variableId}`;
+      return t("Updating variable {0}", { 0: args.variableId });
     case 'create_variable':
-      return `Creating variable --${args.name}`;
+      return t("Creating variable --{0}", { 0: args.name });
     case 'delete_variable':
-      return `Deleting variable ${args.variableId}`;
+      return t("Deleting variable {0}", { 0: args.variableId });
     // Blog tools
     case 'read_collections':
-      return args.collectionName ? `Reading collection "${args.collectionName}"` : `Reading content collections`;
+      return args.collectionName ? t("Reading collection \"{0}\"", { 0: args.collectionName }) : t("Reading content collections");
     case 'read_collection_posts':
-      return `Reading posts in "${args.collectionName}"`;
+      return t("Reading posts in \"{0}\"", { 0: args.collectionName });
     case 'read_blog_slots':
-      return `Reading blog slots`;
+      return t("Reading blog slots");
     case 'read_blog_card_template':
-      return `Reading card template for ${args.slotKey}`;
+      return t("Reading card template for {0}", { 0: args.slotKey });
     case 'read_post_page':
-      return `Reading post page bindings`;
+      return t("Reading post page bindings");
     case 'create_collection':
-      return `Creating collection "${args.name}"`;
+      return t("Creating collection \"{0}\"", { 0: args.name });
     case 'create_post':
-      return `Creating post "${args.slug}" in "${args.collectionName}"`;
+      return t("Creating post \"{0}\" in \"{1}\"", { 0: args.slug, 1: args.collectionName });
     case 'update_post':
-      return `Updating post "${args.slug}" in "${args.collectionName}"`;
+      return t("Updating post \"{0}\" in \"{1}\"", { 0: args.slug, 1: args.collectionName });
     case 'delete_post':
-      return `Deleting post "${args.slug}" from "${args.collectionName}"`;
+      return t("Deleting post \"{0}\" from \"{1}\"", { 0: args.slug, 1: args.collectionName });
     case 'update_blog_card_classes':
-      return `Updating card "${args.selector}" classes`;
+      return t("Updating card \"{0}\" classes", { 0: args.selector });
     case 'update_blog_settings':
-      return `Updating blog slot settings`;
+      return t("Updating blog slot settings");
     case 'bind_blog_collection':
-      return `Binding slot to collection "${args.collectionName}"`;
+      return t("Binding slot to collection \"{0}\"", { 0: args.collectionName });
     case 'set_post_page_binding':
-      return `Binding "${args.elementKey}" to field "${args.fieldName}"`;
+      return t("Binding \"{0}\" to field \"{1}\"", { 0: args.elementKey, 1: args.fieldName });
     // Structure tools
     case 'delete_element':
-      return `Deleting element ${args.elementId}`;
+      return t("Deleting element {0}", { 0: args.elementId });
     case 'delete_instance_child':
-      return `Deleting "${args.selector}" inside ${args.instanceId}`;
+      return t("Deleting \"{0}\" inside {1}", { 0: args.selector, 1: args.instanceId });
     case 'move_element':
-      return `Moving element ${args.elementKey}`;
+      return t("Moving element {0}", { 0: args.elementKey });
     case 'reorder_page_elements':
-      return `Reordering page sections`;
+      return t("Reordering page sections");
     case 'set_child_order':
-      return `Reordering children of ${args.parentKey}`;
+      return t("Reordering children of {0}", { 0: args.parentKey });
     case 'set_grid_placement':
-      return `Placing ${args.key} in the grid`;
+      return t("Placing {0} in the grid", { 0: args.key });
     // Drawn elements
     case 'add_drawn_element':
-      return `Drawing <${args.tag}> on the page`;
+      return t("Drawing <{0}> on the page", { 0: args.tag });
     case 'delete_drawn_element':
-      return `Deleting drawn element ${args.elementKey}`;
+      return t("Deleting drawn element {0}", { 0: args.elementKey });
     // History
     case 'undo':
-      return `Undoing the last change`;
+      return t("Undoing the last change");
     case 'redo':
-      return `Redoing the last change`;
+      return t("Redoing the last change");
     // Link / image / SEO
     case 'update_link_attribute':
-      return `Setting link ${args.attribute} on ${args.elementId}`;
+      return t("Setting link {0} on {1}", { 0: args.attribute, 1: args.elementId });
     case 'unwrap_link':
-      return `Removing link wrapper from ${args.elementId}`;
+      return t("Removing link wrapper from {0}", { 0: args.elementId });
     case 'generate_image': {
       const p = typeof args.prompt === 'string' ? args.prompt : '';
-      return p ? `Generating image: "${p.slice(0, 50)}${p.length > 50 ? '…' : ''}" (can take a minute)` : 'Generating image (can take a minute)';
+      return p ? t("Generating image: \"{0}{1}\" (can take a minute)", { 0: p.slice(0, 50), 1: p.length > 50 ? '…' : '' }) : t("Generating image (can take a minute)");
     }
     case 'search_stock_images':
-      return `Searching stock photos: "${args.query}"`;
+      return t("Searching stock photos: \"{0}\"", { 0: args.query });
     case 'update_image_attribute':
-      return `Setting image ${args.attribute} on ${args.elementId}`;
+      return t("Setting image {0} on {1}", { 0: args.attribute, 1: args.elementId });
     case 'update_page_seo':
-      return `Updating SEO ${args.field}`;
+      return t("Updating SEO {0}", { 0: args.field });
     // Pages / project
     case 'set_home_page':
-      return `Making ${args.pageId} the home page`;
+      return t("Making {0} the home page", { 0: args.pageId });
     case 'move_page':
-      return `Moving page ${args.pageId}`;
+      return t("Moving page {0}", { 0: args.pageId });
     case 'rename_project':
-      return `Renaming project to "${args.name}"`;
+      return t("Renaming project to \"{0}\"", { 0: args.name });
     case 'export_project':
-      return `Exporting the project as a zip`;
+      return t("Exporting the project as a zip");
     case 'deploy_project':
-      return `Deploying to ${args.provider}`;
+      return t("Deploying to {0}", { 0: args.provider });
     // Variables schema
     case 'create_variable_collection':
-      return `Creating variable collection "${args.name}"`;
+      return t("Creating variable collection \"{0}\"", { 0: args.name });
     case 'delete_variable_collection':
-      return `Deleting variable collection ${args.collectionId}`;
+      return t("Deleting variable collection {0}", { 0: args.collectionId });
     case 'add_variable_mode':
-      return `Adding mode "${args.name}"`;
+      return t("Adding mode \"{0}\"", { 0: args.name });
     case 'rename_variable_mode':
-      return `Renaming mode to "${args.name}"`;
+      return t("Renaming mode to \"{0}\"", { 0: args.name });
     case 'rename_variable':
-      return `Renaming variable to --${args.name}`;
+      return t("Renaming variable to --{0}", { 0: args.name });
     case 'retype_variable':
-      return `Changing variable type to ${args.newType}`;
+      return t("Changing variable type to {0}", { 0: args.newType });
     // Blog schema
     case 'add_collection_field':
-      return `Adding field "${args.fieldName}" to "${args.collectionName}"`;
+      return t("Adding field \"{0}\" to \"{1}\"", { 0: args.fieldName, 1: args.collectionName });
     case 'rename_collection_field':
-      return `Renaming field "${args.fieldName}" to "${args.newName}"`;
+      return t("Renaming field \"{0}\" to \"{1}\"", { 0: args.fieldName, 1: args.newName });
     case 'delete_collection_field':
-      return `Deleting field "${args.fieldName}" from "${args.collectionName}"`;
+      return t("Deleting field \"{0}\" from \"{1}\"", { 0: args.fieldName, 1: args.collectionName });
     case 'rename_collection':
-      return `Renaming collection "${args.collectionName}" to "${args.newName}"`;
+      return t("Renaming collection \"{0}\" to \"{1}\"", { 0: args.collectionName, 1: args.newName });
     case 'delete_collection':
-      return `Deleting collection "${args.collectionName}"`;
+      return t("Deleting collection \"{0}\"", { 0: args.collectionName });
     case 'bind_content_field':
-      return `Binding "${args.elementKey}" to field "${args.fieldName}"`;
+      return t("Binding \"{0}\" to field \"{1}\"", { 0: args.elementKey, 1: args.fieldName });
     case 'unbind_blog_slot':
-      return `Unbinding blog slot ${args.slotKey}`;
+      return t("Unbinding blog slot {0}", { 0: args.slotKey });
     // Instances
     case 'reset_instance':
-      return `Resetting instance ${args.instanceId} to master`;
+      return t("Resetting instance {0} to master", { 0: args.instanceId });
     case 'make_component':
-      return `Making a component from ${args.key}`;
+      return t("Making a component from {0}", { 0: args.key });
     case 'create_component':
-      return `Creating component "${args.name}"`;
+      return t("Creating component \"{0}\"", { 0: args.name });
     case 'set_component_category':
-      return args.category
-        ? `Moving ${args.componentPath} into folder "${args.category}"`
-        : `Removing ${args.componentPath} from its folder`;
+      return args.category ? t("Moving {0} into folder \"{1}\"", { 0: args.componentPath, 1: args.category }) : t("Removing {0} from its folder", { 0: args.componentPath });
     case 'place_component_instance':
-      return `Placing component ${args.componentPath}`;
+      return t("Placing component {0}", { 0: args.componentPath });
     case 'push_instance_to_source':
-      return `Pushing ${args.instanceId} to source`;
+      return t("Pushing {0} to source", { 0: args.instanceId });
     // Layouts
     case 'read_layouts':
-      return `Reading available layouts`;
+      return t("Reading available layouts");
     case 'apply_layout':
-      return `Applying layout "${args.layoutName}"`;
+      return t("Applying layout \"{0}\"", { 0: args.layoutName });
     case 'detach_layout':
-      return `Detaching the page layout`;
+      return t("Detaching the page layout");
     case 'set_layout_props':
-      return `Updating layout props`;
+      return t("Updating layout props");
     default:
       return toolName;
   }
@@ -795,68 +794,68 @@ export function formatToolCallAction(toolName: string, args: Record<string, unkn
 /** Format a tool result into a short suffix appended to the action line */
 function formatToolResultSuffix(toolName: string, result: Record<string, unknown>): string {
   if (result?.error) {
-    return ` — failed: ${result.error}`;
+    return t(" — failed: {0}", { 0: result.error });
   }
   if (result?.cancelled) {
-    return ` — cancelled by user`;
+    return t(" — cancelled by user");
   }
   if (result?.success === false && result?.message) {
-    return ` — failed: ${result.message}`;
+    return t(" — failed: {0}", { 0: result.message });
   }
 
   switch (toolName) {
     case 'read_source_elements': {
       const elements = result?.elements as Array<unknown> | undefined;
-      return ` — ${elements?.length || 0} source elements`;
+      return t(" — {0} source elements", { 0: elements?.length || 0 });
     }
     case 'read_page_content': {
       const elements = result?.elements as Array<unknown> | undefined;
-      return ` — ${elements?.length || 0} elements`;
+      return t(" — {0} elements", { 0: elements?.length || 0 });
     }
     case 'read_component_content':
-      return result?.markup ? ` — done` : ` — not found`;
+      return result?.markup ? t(" — done") : t(" — not found");
     case 'read_element_html': {
       const truncated = result?.truncated ? ' (truncated)' : '';
-      return result?.html ? ` — done${truncated}` : ` — not found`;
+      return result?.html ? t(" — done{0}", { 0: truncated }) : t(" — not found");
     }
     case 'verify_layout': {
       const findings = result?.findings as Array<unknown> | undefined;
-      if (!findings) return ` — failed`;
-      return findings.length === 0 ? ` — clean` : ` — ${findings.length} finding${findings.length !== 1 ? 's' : ''}`;
+      if (!findings) return t(" — failed");
+      return findings.length === 0 ? t(" — clean") : t(" — {0} finding{1}", { 0: findings.length, 1: findings.length !== 1 ? 's' : '' });
     }
     case 'add_page_content': {
-      if (result?.success === false) return ` — failed`;
-      if ((result?.data as { emptyFrame?: boolean } | undefined)?.emptyFrame) return ` — empty frame (invisible until filled)`;
-      return ` — done`;
+      if (result?.success === false) return t(" — failed");
+      if ((result?.data as { emptyFrame?: boolean } | undefined)?.emptyFrame) return t(" — empty frame (invisible until filled)");
+      return t(" — done");
     }
     case 'read_variables': {
       const cols = result?.collections as Array<unknown> | undefined;
       const varCount = cols?.reduce((n: number, c: unknown) => n + ((c as { variables?: unknown[] }).variables?.length ?? 0), 0) ?? 0;
-      return ` — ${varCount} variable${varCount !== 1 ? 's' : ''}`;
+      return t(" — {0} variable{1}", { 0: varCount, 1: varCount !== 1 ? 's' : '' });
     }
     case 'update_variable_value':
     case 'create_variable':
     case 'delete_variable':
-      return result?.success !== false ? ` — done` : ` — failed`;
+      return result?.success !== false ? t(" — done") : t(" — failed");
     // Blog read tools
     case 'read_collections': {
       const cols = result?.collections as Array<unknown> | undefined;
-      return ` — ${cols?.length ?? 0} collection${cols?.length !== 1 ? 's' : ''}`;
+      return t(" — {0} collection{1}", { 0: cols?.length ?? 0, 1: cols?.length !== 1 ? 's' : '' });
     }
     case 'read_collection_posts': {
       const posts = result?.posts as Array<unknown> | undefined;
-      return ` — ${posts?.length ?? 0} post${posts?.length !== 1 ? 's' : ''}`;
+      return t(" — {0} post{1}", { 0: posts?.length ?? 0, 1: posts?.length !== 1 ? 's' : '' });
     }
     case 'read_blog_slots': {
       const slots = result?.slots as Array<unknown> | undefined;
-      return ` — ${slots?.length ?? 0} slot${slots?.length !== 1 ? 's' : ''}`;
+      return t(" — {0} slot{1}", { 0: slots?.length ?? 0, 1: slots?.length !== 1 ? 's' : '' });
     }
     case 'read_blog_card_template': {
       const selectors = result?.selectors as Array<unknown> | undefined;
-      return ` — ${selectors?.length ?? 0} selectors`;
+      return t(" — {0} selectors", { 0: selectors?.length ?? 0 });
     }
     case 'read_post_page':
-      return result?.collectionId ? ` — done` : ` — not found`;
+      return result?.collectionId ? t(" — done") : t(" — not found");
     // Blog write tools
     case 'create_collection':
     case 'create_post':
@@ -866,28 +865,28 @@ function formatToolResultSuffix(toolName: string, result: Record<string, unknown
     case 'update_blog_settings':
     case 'bind_blog_collection':
     case 'set_post_page_binding':
-      return result?.success !== false ? ` — done` : ` — failed`;
+      return result?.success !== false ? t(" — done") : t(" — failed");
     case 'deploy_project': {
       const url = (result?.data as { url?: string } | undefined)?.url;
-      return url ? ` — live at ${url}` : ` — done`;
+      return url ? t(" — live at {0}", { 0: url }) : t(" — done");
     }
     case 'make_component':
     case 'create_component': {
       const name = (result?.data as { componentName?: string } | undefined)?.componentName;
-      return name ? ` — created "${name}"` : ` — done`;
+      return name ? t(" — created \"{0}\"", { 0: name }) : t(" — done");
     }
     case 'read_layouts': {
       const layouts = result?.layouts as Array<unknown> | undefined;
-      return ` — ${layouts?.length ?? 0} layout${layouts?.length !== 1 ? 's' : ''}`;
+      return t(" — {0} layout{1}", { 0: layouts?.length ?? 0, 1: layouts?.length !== 1 ? 's' : '' });
     }
     case 'generate_image':
-      if (result?.success === false) return result?.cancelled ? ` — cancelled` : ` — failed`;
-      return ` — stored, apply next`;
+      if (result?.success === false) return result?.cancelled ? t(" — cancelled") : t(" — failed");
+      return t(" — stored, apply next");
     case 'search_stock_images': {
       const photos = result?.photos as Array<unknown> | undefined;
-      return photos ? ` — ${photos.length} candidate${photos.length !== 1 ? 's' : ''}` : ` — done`;
+      return photos ? t(" — {0} candidate{1}", { 0: photos.length, 1: photos.length !== 1 ? 's' : '' }) : t(" — done");
     }
     default:
-      return result?.success !== false ? ` — done` : '';
+      return result?.success !== false ? t(" — done") : '';
   }
 }

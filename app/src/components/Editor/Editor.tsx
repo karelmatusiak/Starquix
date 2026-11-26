@@ -1,4 +1,5 @@
 import { GripIcon as SharedGripIcon } from '@/assets/icons';
+import { t } from '@/i18n';
 import { dispatchDurableAction } from '@/store/durableDispatch';
 import { sourceActionFailure } from '@/utils/sourceActionFeedback';
 // src/components/Editor/Editor.tsx
@@ -453,7 +454,7 @@ function EditorContent({ projectId, onProjectMissing }: EditorContentProps) {
     const handler = () => {
       if (!currentPageId) return;
       const { layoutName } = selectPageLayout(doc, currentPageId);
-      if (!layoutName) { toast.error('No layout on this page — drop a layout first.'); return; }
+      if (!layoutName) { toast.error(t("No layout on this page — drop a layout first.")); return; }
       onOpenModal();
     };
     window.addEventListener('sq:layout-slot-click', handler);
@@ -594,7 +595,7 @@ function EditorContent({ projectId, onProjectMissing }: EditorContentProps) {
       });
     } catch (err) {
       console.error('[icons] materialize failed:', err);
-      toast.error('Failed to add icon');
+      toast.error(t("Failed to add icon"));
     }
   }, [fullComponentLibrary, handleSelectComponent, localPath]);
 
@@ -604,7 +605,7 @@ function EditorContent({ projectId, onProjectMissing }: EditorContentProps) {
     const { resolved, missing } = resolvePreset(preset, library);
     if (missing.length > 0) console.warn('[picker] preset components missing from library:', missing);
     if (resolved.length === 0) {
-      toast.error('Template components not found in library');
+      toast.error(t("Template components not found in library"));
       return;
     }
 
@@ -645,7 +646,7 @@ function EditorContent({ projectId, onProjectMissing }: EditorContentProps) {
     if (survivors > 0) {
       toast(`${survivors} existing element(s) could not be removed — template added below them`);
     } else {
-      toast.success(`Applied "${preset.name}" template`);
+      toast.success(t("Applied \"{0}\" template", { 0: preset.name }));
     }
   }, [currentPageId, doc, dispatch, gutterRootElements, rootElements.length, libraryBuiltIn, libraryUserProject, takeSnapshot, claimSnapshot, scannedElementsRef]);
 
@@ -804,7 +805,7 @@ function EditorContent({ projectId, onProjectMissing }: EditorContentProps) {
       // Layers panel drag (single + group) — shared handler (also used by the
       // master/component editor via AssetsPanel's foreign-drag passthrough).
       await layersDrag.onDragEnd(event);
-      } catch (error) { toast.error(`Move was not saved: ${error instanceof Error ? error.message : String(error)}`); }
+      } catch (error) { toast.error(t("Move was not saved: {0}", { 0: error instanceof Error ? error.message : String(error) })); }
     },
     [gutterRootElements, reorderRootElements, hideDropIndicator, markReorderPending, layersDrag, pushStructuralUndo]
   );
@@ -845,7 +846,7 @@ function EditorContent({ projectId, onProjectMissing }: EditorContentProps) {
       // The project IS its files — zip them as-is.
       await exportFilesTruthProject(projectId, project.name, doc);
 
-      toast.success('Project exported successfully!');
+      toast.success(t("Project exported successfully!"));
     } catch (err) {
       console.error('Export failed:', err);
       toast.error(exportFailureMessage(err));

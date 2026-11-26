@@ -8,6 +8,7 @@
  *   (assigning it first when needed — utils/cardAssignment.planCardMove).
  */
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 import { planCardDelete, planCardMove, type CardAssignment } from '@/utils/cardAssignment';
 import { assignCard, readSetup } from '@/utils/cardSetup';
 import { projectSourcesSnapshot } from '@/utils/cardTitleLock';
@@ -35,7 +36,7 @@ export async function assignCardToCollection({ cardFile, collection, fields, cur
       return out;
     }, claimSnapshot());
   } catch (err) {
-    toast.error(`Could not assign ${nameOf(cardFile)} to ${collection} — ${errorOf(err, 'nothing was changed')}`);
+    toast.error(t("Could not assign {0} to {1} — {2}", { 0: nameOf(cardFile), 1: collection, 2: errorOf(err, 'nothing was changed') }));
     return false;
   }
   if (changed) toast(`${nameOf(cardFile)} can now show ${collection} posts — pick it in a Blog's Card setting${shown + hidden ? ` (${shown} fields shown, ${hidden} hidden)` : ''}`);
@@ -57,7 +58,7 @@ export async function pickListingCard({ pageFile, cardFile, collection, fields, 
     }, claimSnapshot());
     return true;
   } catch (err) {
-    toast.error(`Could not change the card — ${errorOf(err, 'nothing was changed')}`);
+    toast.error(t("Could not change the card — {0}", { 0: errorOf(err, 'nothing was changed') }));
     return false;
   }
 }
@@ -79,7 +80,7 @@ export async function deleteCards({ cardFiles, assignments, fieldsOf, takeSnapsh
     }, claimSnapshot());
     return true;
   } catch (err) {
-    toast.error(`Could not delete ${cardFiles.map(nameOf).join(', ')} — ${errorOf(err, 'nothing was changed')}`);
+    toast.error(t("Could not delete {0} — {1}", { 0: cardFiles.map(nameOf).join(', '), 1: errorOf(err, 'nothing was changed') }));
     return false;
   }
 }

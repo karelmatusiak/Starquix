@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { t } from '@/i18n';
 import { useEditorDoc } from '@/store/hooks';
 import { selectCurrentPageId, selectPostPageByCollectionId } from '@/store/selectors';
 import { selectContentCollections } from '@/store/collectionSelectors';
@@ -29,7 +30,7 @@ export function useGoToPost() {
     try {
       targetPageId = existing?.id ?? await createPostPage(doc, collectionId, collection.name, hostPageId);
     } catch (error) {
-      toast.error(`Could not open the post page — ${error instanceof Error ? error.message : 'storage failed'}`);
+      toast.error(t("Could not open the post page — {0}", { 0: error instanceof Error ? error.message : 'storage failed' }));
       return;
     }
     if (hostPageId) expandPages([hostPageId]);

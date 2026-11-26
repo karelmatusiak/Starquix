@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Row, Button } from '@/components/ui';
 import { GearIcon, UploadIcon } from '@/assets/icons';
@@ -14,7 +15,7 @@ import { SeoTextField } from '../SeoTextField';
 import { SECTION_ROW_CLS, SECTION_ICON_CLS, SECTION_CONTENT_CLS } from './shared';
 
 type SiteField = SiteHeadField | 'site';
-const fail = (what: string) => (error: unknown) => toast.error(`${what} was not saved: ${error instanceof Error ? error.message : String(error)}`);
+const fail = (what: string) => (error: unknown) => toast.error(t("{0} was not saved: {1}", { 0: what, 1: error instanceof Error ? error.message : String(error) }));
 
 /** Settings every page shares: the site's address, sitemap + robots.txt, favicon, language, name, X handle. */
 export const SiteSection: React.FC = () => {

@@ -12,6 +12,7 @@
  * docs/plans/task-078-layers-drag-reparent-ledger.md.
  */
 import { useCallback, useRef } from 'react';
+import { t } from '@/i18n';
 import type { DragStartEvent, DragMoveEvent, DragEndEvent } from '@dnd-kit/core';
 import toast from 'react-hot-toast';
 import { useYjsValue } from '@/store';
@@ -261,7 +262,7 @@ export function useLayersDrag(opts?: { onReorderPending?: () => void; viewedComp
       }
       sendReorderToIframe(plan.orderedKeys);
       onReorderPending?.();
-      } catch (error) { toast.error(`Move was not saved: ${error instanceof Error ? error.message : String(error)}`); }
+      } catch (error) { toast.error(t("Move was not saved: {0}", { 0: error instanceof Error ? error.message : String(error) })); }
     },
     [doc, gutterRootElements, reorderRootElementsByKeys, reorderChildElements, reparentElement, takeSnapshot, claimSnapshot, pushStructuralUndo, scannedElementsRef, scannedByKeyRef, onReorderPending, viewedComponentFile],
   );

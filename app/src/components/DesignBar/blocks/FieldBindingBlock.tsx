@@ -14,6 +14,7 @@
  * instance. Other collections' mappings are untouched.
  */
 import { useMemo } from 'react';
+import { t } from '@/i18n';
 import { Button, Field, Row, Tooltip } from '@/components/ui';
 import { LockIcon } from '@/assets/icons';
 import { useFieldBinding } from '@/hooks/useFieldBinding';
@@ -84,7 +85,7 @@ export function FieldBindingBlock({ sourceLocation, tagName, mode, collections, 
       try {
         await rewriteLocalFile(sourceLocation.file, (s) => setSlotField(s ?? '', view, slot, v || null), claimSnapshot());
       } catch (err) {
-        toast.error(`Could not change the field — ${err instanceof Error ? err.message : 'the card was not changed'}`);
+        toast.error(t("Could not change the field — {0}", { 0: err instanceof Error ? err.message : 'the card was not changed' }));
       }
     };
     return (

@@ -16,6 +16,7 @@
  * content, silent apply on an empty layout-less page.
  */
 import toast from 'react-hot-toast';
+import { t } from '@/i18n';
 import type { ScannedComponent } from '@/hooks/useComponentLibrary';
 import type { ThemeComponentTemplate } from '@/components/ComponentPickerModal';
 import { isThemeComponentTemplate } from '@/components/ComponentPickerModal';
@@ -151,7 +152,7 @@ export async function applyLocalPageLayout(args: LocalLayoutApplyArgs): Promise<
     return { ok: false, reason: detail };
   }
   if (!/^[A-Za-z_$][\w$]*$/.test(layoutName)) {
-    toast.error(`Can't use "${layoutName}" as a layout component name`);
+    toast.error(t("Can't use \"{0}\" as a layout component name", { 0: layoutName }));
     return { ok: false, reason: `can't use "${layoutName}" as a layout component name` };
   }
   if (!pageFile || !localProjectPath) {
@@ -176,7 +177,7 @@ export async function applyLocalPageLayout(args: LocalLayoutApplyArgs): Promise<
     await settleAcceptedWrites();
     const before = await fetchLocalPageSource(localProjectPath, pageFile);
     if (before === null) {
-      toast.error('Could not read the page file');
+      toast.error(t("Could not read the page file"));
       return { ok: false, reason: 'could not read the page file' };
     }
 
@@ -208,11 +209,11 @@ export async function applyLocalPageLayout(args: LocalLayoutApplyArgs): Promise<
       res = await viteStructuralWriter.writeRestoreRegion(loc, fileLineSpan(before), after, origin);
     } catch (err) {
       const detail = err instanceof Error ? err.message : 'the file was not changed';
-      toast.error(`Could not apply the layout — ${detail}`);
+      toast.error(t("Could not apply the layout — {0}", { 0: detail }));
       return { ok: false, reason: detail };
     }
     if (!res || !res.success) {
-      toast.error('Could not apply the layout — the file was not changed');
+      toast.error(t("Could not apply the layout — the file was not changed"));
       return { ok: false, reason: 'the file was not changed' };
     }
 

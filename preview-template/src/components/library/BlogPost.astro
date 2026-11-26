@@ -40,34 +40,34 @@ import Logos from './Logos.astro';
   <GlobalNav />
   <slot>
     <article class="mx-auto max-w-2xl px-6 py-16">
-      <p class="text-sm font-medium uppercase tracking-widest text-blue-600">Engineering</p>
-      <h1 class="mt-3 text-4xl font-bold tracking-tight text-gray-900">How we cut our build times in half</h1>
-      <p class="mt-4 text-lg text-gray-500">A practical walkthrough of the caching, profiling, and one surprising config flag that got our CI from 22 minutes down to 9.</p>
+      <p class="text-sm font-medium uppercase tracking-widest text-blue-600">Z pekárny</p>
+      <h1 class="mt-3 text-4xl font-bold tracking-tight text-gray-900">Jak jsme zkrátili ranní pečení na polovinu</h1>
+      <p class="mt-4 text-lg text-gray-500">Praktický návod na kvásek, teplotu pece a jeden nečekaný detail v receptu, který zkrátil ranní pečení ze dvou hodin na polovinu.</p>
       <section class="mt-6 flex items-center gap-3">
         <img src="/assets/userpics/userpic03.webp" alt="Author avatar" class="h-10 w-10 rounded-full object-cover" />
-        <span class="text-sm font-medium text-gray-900">Alex Rivera</span>
+        <span class="text-sm font-medium text-gray-900">Aleš Říha</span>
         <span class="text-sm text-gray-400">·</span>
-        <time class="text-sm text-gray-500">Aug 13, 2026</time>
+        <time class="text-sm text-gray-500">13. srpna 2026</time>
       </section>
       <figure class="mt-10">
         <img src="/assets/images/content/hero-bg.webp" alt="Build pipeline dashboard" class="w-full rounded-xl object-cover" />
-        <figcaption class="mt-2 text-center text-sm text-gray-400">The pipeline dashboard after the migration.</figcaption>
+        <figcaption class="mt-2 text-center text-sm text-gray-400">Nástěnka provozu po přestěhování.</figcaption>
       </figure>
-      <p class="mt-10 text-base leading-7 text-gray-700">Every team says their build is slow. Ours actually was: twenty-two minutes from push to green, long enough that people batched commits and reviews queued up overnight. This post is the exact sequence of changes that fixed it, with the numbers for each step.</p>
-      <h2 class="mt-12 text-2xl font-semibold text-gray-900">Start by measuring, not guessing</h2>
-      <p class="mt-4 text-base leading-7 text-gray-700">We spent the first day only profiling. The breakdown surprised us: dependency install was 40% of the wall clock, tests were 25%, and the bundler — the thing everyone blamed — was under 15%.</p>
-      <blockquote class="mt-8 border-l-4 border-blue-600 pl-4 text-lg italic text-gray-600">The slowest part of your build is almost never the part your team complains about.</blockquote>
-      <h2 class="mt-12 text-2xl font-semibold text-gray-900">The three changes that mattered</h2>
+      <p class="mt-10 text-base leading-7 text-gray-700">Každý říkal, že ráno nestíháme. Byla to pravda: od zadělání po první teplý bochník to trvalo dvaadvacet minut, dost na to, aby si sousedé nechávali chleba na další den a vzkazy se přes noc kupily. Tady je postup, kterým jsme to zkrátili, s čísly u každého kroku.</p>
+      <h2 class="mt-12 text-2xl font-semibold text-gray-900">Začněte měřením, ne odhadem</h2>
+      <p class="mt-4 text-base leading-7 text-gray-700">První den jsme jen měřili. Rozpad nás překvapil: příprava těsta zabrala 40 % času, pečení 25 % a výdej – na který všichni nadávali – byl pod 15 %.</p>
+      <blockquote class="mt-8 border-l-4 border-blue-600 pl-4 text-lg italic text-gray-600">Nejpomalejší část dne skoro nikdy není to, na co si tým stěžuje.</blockquote>
+      <h2 class="mt-12 text-2xl font-semibold text-gray-900">Tři změny, které rozhodly</h2>
       <ul class="mt-4 list-disc space-y-2 pl-6 text-base leading-7 text-gray-700">
-        <li>Restored the dependency cache between runs — 8 minutes saved.</li>
-        <li>Split the test suite across four shards — 3 minutes saved.</li>
-        <li>Turned off source maps on CI builds — 2 minutes saved.</li>
+        <li>Nechali jsme kvásek zrát přes noc — 8 minut k dobru.</li>
+        <li>Rozdělili jsme ranní pečení do čtyř várek – 3 minuty k dobru.</li>
+        <li>Vypnuli jsme zbytečný předehřev – 2 minuty k dobru.</li>
       </ul>
       <figure class="mt-10">
         <img src="/assets/images/content/components.webp" alt="Test shard timing chart" class="w-full rounded-xl object-cover" />
-        <figcaption class="mt-2 text-center text-sm text-gray-400">Shard timings after the split — near-even at last.</figcaption>
+        <figcaption class="mt-2 text-center text-sm text-gray-400">Časy várek po rozdělení – konečně skoro stejné.</figcaption>
       </figure>
-      <p class="mt-10 text-base leading-7 text-gray-700">Nine minutes isn't the floor — but it's fast enough that nobody batches commits anymore, and that changed how the team ships more than any tool could. <strong class="font-semibold text-gray-900">Measure first; the wins are rarely where you think.</strong></p>
+      <p class="mt-10 text-base leading-7 text-gray-700">Devět minut není spodní hranice — je to ale dost rychlé, aby si nikdo nenechával chleba na další den, a ranní směna se tím změnila víc než jakékoli nové náčiní. <strong class="font-semibold text-gray-900">Nejdřív změřte čas; úspora bývá jinde, než čekáte.</strong></p>
     </article>
   </slot>
 </Layout>

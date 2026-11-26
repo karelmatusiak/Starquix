@@ -3,6 +3,7 @@
  * grid placement, and flow reorder. Moved verbatim from ViewportFrame.tsx.
  */
 import { slotNameForDropTarget, draggedElementId } from '@/utils/slotDrop';
+import { t } from '@/i18n';
 import { dispatchSetChildOrder, isValidChildOrderParentKey } from '@/utils/dispatchSetChildOrder';
 import { clampCellToSpan, writeGridPlacement, gridOfChild } from '@/utils/gridGeometry';
 import { planDisplaced } from '@/utils/gridSwap';
@@ -371,5 +372,5 @@ export async function handleDragElementDrop(ctx: ViewportMessageContext, payload
   ctx.actions.setGridGeometry(null);
   clearSelectedCellGeometry(); // lockstep with the geometry clear (task-090 review)
   ctx.actions.setHighlightedGridCell(null);
-  } catch (error) { toast.error(`Move was not saved: ${error instanceof Error ? error.message : String(error)}`); }
+  } catch (error) { toast.error(t("Move was not saved: {0}", { 0: error instanceof Error ? error.message : String(error) })); }
 }

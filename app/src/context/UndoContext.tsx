@@ -14,6 +14,7 @@
  * Page/content structural replay still uses the legacy fallback below
  */
 import { awaitClassEditsInFlight, hasClassEditsInFlight } from '@/services/inFlightClassEdits';
+import { t } from '@/i18n';
 import React, { useContext, useState, useCallback, type ReactNode } from 'react';
 import * as Y from 'yjs';
 import toast from 'react-hot-toast';
@@ -1124,7 +1125,7 @@ export function UndoProvider({ children }: { children: ReactNode }) {
     const detail = error instanceof Error ? error.message : String(error);
     const stale = /Source changed before acceptance/.test(detail);
     if (stale) (dir === 'undo' ? setPast : setFuture)(prev => prev.filter(item => item !== entry));
-    toast.error(`${dir === 'undo' ? 'Undo' : 'Redo'} was not saved: ${detail}${stale ? ' — the step was removed' : ''}`);
+    toast.error(t("{0} was not saved: {1}{2}", { 0: dir === 'undo' ? 'Undo' : 'Redo', 1: detail, 2: stale ? ' — the step was removed' : '' }));
   }, []);
 
   const beginStructuralReplay = useCallback(async (entry: StructuralUndoRecord, dir: 'undo' | 'redo') => {

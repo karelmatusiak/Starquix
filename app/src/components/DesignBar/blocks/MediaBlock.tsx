@@ -1,4 +1,5 @@
 import { MEDIA_COUNT_ICONS } from '@/assets/icons/mediaCountIcons';
+import { t } from '@/i18n';
 import { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 import toast from 'react-hot-toast';
 import { Button, Row } from '@/components/ui';
@@ -97,7 +98,7 @@ export const MediaBlock: FC<MediaBlockProps> = ({
       const uploaded = await uploadPostMediaFile(projectId, file);
       save((s) => editMediaItem(s, slot, uploaded));
     } catch {
-      toast.error('Upload failed');
+      toast.error(t("Upload failed"));
     }
   }, [projectId, save]);
 

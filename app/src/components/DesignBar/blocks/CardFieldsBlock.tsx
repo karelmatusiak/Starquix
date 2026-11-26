@@ -14,6 +14,7 @@
  * rendered with a collection it is not set up for → "Not set up for X — Set up".
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { t } from '@/i18n';
 import toast from 'react-hot-toast';
 import { Button, Field, IconButton, Row, Tooltip } from '@/components/ui';
 import { DeleteIcon, HiddenIcon, LockIcon, VisibleIcon } from '@/assets/icons';
@@ -85,7 +86,7 @@ export function CardFieldsBlock({ file, collections, conflict = [], allCollectio
       await rewriteLocalFile(file, (s) => (next = compute(s ?? '')), claimSnapshot());
       setSrc(next);
     } catch (err) {
-      toast.error(`Could not ${what} — ${err instanceof Error ? err.message : 'the card was not changed'}`);
+      toast.error(t("Could not {0} — {1}", { 0: what, 1: err instanceof Error ? err.message : 'the card was not changed' }));
     }
   };
   const assign = (collection: string) => {

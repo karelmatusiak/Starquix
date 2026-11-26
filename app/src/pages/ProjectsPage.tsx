@@ -151,7 +151,7 @@ export default function ProjectsPage() {
       await createScaffoldProject(name);
       if (!current()) return;
       setCreateFailure(null);
-      toast.success(`Project "${name}" created`);
+      toast.success(t("Project \"{0}\" created", { 0: name }));
       await loadProjects();
     } catch (error) {
       if (current()) setCreateFailure(failure('project-create', error));
@@ -181,7 +181,7 @@ export default function ProjectsPage() {
       lifetime.retainedDeletes.delete(projectId);
       setDeleteFailures(previous => { const next = { ...previous }; delete next[projectId]; return next; });
       setProjects(previous => previous.filter(p => p._id !== projectId));
-      toast.success(`Deleted “${captured.project.name}” — ${shortcutLabel('⌘Z')} to undo`);
+      toast.success(t("Deleted “{0}” — {1} to undo", { 0: captured.project.name, 1: shortcutLabel('⌘Z') }));
     } catch (error) {
       if (!current()) return;
       ++lifetime.read;
@@ -316,7 +316,7 @@ export default function ProjectsPage() {
         onClose={() => setIsImportOpen(false)}
         onImported={(projectId) => {
           setIsImportOpen(false);
-          toast.success('Project imported');
+          toast.success(t("Project imported"));
           navigate(`/editor/${projectId}`);
         }}
       />

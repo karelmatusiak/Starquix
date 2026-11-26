@@ -1105,7 +1105,7 @@ export function ElementsTree({ baseDepth = 0, viewedComponentFile = null, dynami
         },
       }, '*');
       setReparentDragKey(null);
-      } catch (error) { toast.error(`Move was not saved: ${error instanceof Error ? error.message : String(error)}`); }
+      } catch (error) { toast.error(t("Move was not saved: {0}", { 0: error instanceof Error ? error.message : String(error) })); }
     },
     [doc, reparentDragKey, currentPageId, layoutRootKey, dispatch, takeSnapshot, claimSnapshot, setReparentDragKey, scannedElements, projectId, pushStructuralUndo, scannedByKey],
   );

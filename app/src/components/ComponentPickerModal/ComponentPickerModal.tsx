@@ -1,5 +1,6 @@
 // src/components/ComponentPickerModal/ComponentPickerModal.tsx
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { t } from '@/i18n';
 import { Modal, Tabs, SearchField, Button, EmptyState, OperationNotice } from '@/components/ui';
 import { useComponentLibrary, type ScannedComponent } from '@/hooks/useComponentLibrary';
 import { getPreviewImage, resolvePreviewImage } from './previewImages';
@@ -71,7 +72,7 @@ function CategoryItem({
         onHover();
       }}
     >
-      <div className="text-text text-sm-medium">{name}</div>
+      <div className="text-text text-sm-medium">{t(name)}</div>
     </div>
   );
 }
@@ -115,18 +116,18 @@ function ComponentCard({
         {previewImage ? (
           <img
             src={previewImage}
-            alt={component.name}
+            alt={t(component.name)}
             className="w-full h-full object-cover object-top"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-text-secondary text-xs">
-            {component.name}
+            {t(component.name)}
           </div>
         )}
       </div>
 
       {/* Component name */}
-      <div className="text-xs text-text-secondary truncate">{component.name}</div>
+      <div className="text-xs text-text-secondary truncate">{t(component.name)}</div>
 
       {/* Add button overlay */}
       {showAddButton && (
@@ -184,7 +185,7 @@ export function ThemeComponentCard({
           window.sqDesktop, every project and the stored tokens). */}
       <div className="aspect-[16/9] bg-white rounded border border-stroke mb-2 overflow-hidden">
         <iframe
-          title={component.name}
+          title={t(component.name)}
           sandbox=""
           srcDoc={THEME_PREVIEW_BASE + component.html}
           loading="lazy"
@@ -194,7 +195,7 @@ export function ThemeComponentCard({
       </div>
 
       {/* Component name */}
-      <div className="text-xs text-text-secondary truncate">{component.name}</div>
+      <div className="text-xs text-text-secondary truncate">{t(component.name)}</div>
       <div className="text-xs text-text-secondary truncate">{component.path}</div>
 
       {/* Add button overlay */}
@@ -778,10 +779,10 @@ export function ComponentPickerModal({
         <span className="text-xs text-text-secondary">
           <kbd className="px-1.5 py-0.5 bg-bg-contrast rounded text-text-secondary">←</kbd>
           <kbd className="px-1.5 py-0.5 bg-bg-contrast rounded text-text-secondary ml-1">→</kbd>
-          {' '}navigate{' '}&bull;{' '}
-          <kbd className="px-1.5 py-0.5 bg-bg-contrast rounded text-text-secondary">Enter</kbd> add
+          {' '}{t('navigate')}{' '}&bull;{' '}
+          <kbd className="px-1.5 py-0.5 bg-bg-contrast rounded text-text-secondary">Enter</kbd> {t('add')}
           {' '}&bull;{' '}
-          <kbd className="px-1.5 py-0.5 bg-bg-contrast rounded text-text-secondary">Esc</kbd> close
+          <kbd className="px-1.5 py-0.5 bg-bg-contrast rounded text-text-secondary">Esc</kbd> {t('close')}
         </span>
       </div>
     </Modal>

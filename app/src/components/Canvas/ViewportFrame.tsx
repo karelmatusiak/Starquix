@@ -1,4 +1,5 @@
 import { ImageIcon as SharedImageIcon, PlusIcon as SharedPlusIcon } from '@/assets/icons';
+import { t } from '@/i18n';
 import { editorMetricsEnabled, recordEditorMetric } from '@/performance/editorMetrics';
 import { useRef, useEffect, useLayoutEffect, useCallback, useState, useMemo } from 'react';
 import { Button, OperationNotice } from '@/components/ui';
@@ -2111,7 +2112,7 @@ export function ViewportFrame({ breakpoint, scale = 1, isDragging = false, isDra
 
     takeSnapshot();
     try { await acceptEditorCommands(doc, [{ type: 'SET_GRID_SPAN', key: selectedKey, gridColumn: colTokenStr, gridRow: rowTokenStr }], claimSnapshot()); }
-    catch (error) { toast.error(`Resize was not saved: ${error instanceof Error ? error.message : String(error)}`); return; }
+    catch (error) { toast.error(t("Resize was not saved: {0}", { 0: error instanceof Error ? error.message : String(error) })); return; }
     syncClassToIframe(selectedKey);
     refreshGridState(selectedKey);
   }, [selectedKey, takeSnapshot, claimSnapshot, doc, breakpoint, syncClassToIframe, refreshGridState]);
