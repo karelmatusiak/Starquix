@@ -20,7 +20,7 @@ import { importSpecifierFor } from '@/utils/localStructural';
 import { SQ_SYSTEM_DIR } from '@/utils/systemComponents';
 
 export const POST_LAYOUT_FILE = 'src/layouts/PostLayout.astro';
-export const POST_LAYOUT_MARKER = 'sq-post-layout-v2';
+export const POST_LAYOUT_MARKER = 'sq-post-layout-v3';
 /** Any version of our marker — a file carrying one is ours (upgradable), never the user's own. */
 const ANY_POST_LAYOUT_MARKER = /sq-post-layout-v\d+/;
 /** Used when the project already has its own PostLayout.astro (never overwritten). */
@@ -34,7 +34,7 @@ export interface SiteLayoutRef {
 }
 
 /** `utilitiesImport` = sq-utilities.css relative to the layout file. */
-export function postLayoutSource(site: SiteLayoutRef | null, utilitiesImport = importSpecifierFor(POST_LAYOUT_FILE, UTILITIES_FILE)): string {
+export function postLayoutSource(site: SiteLayoutRef | null, utilitiesImport = importSpecifierFor(POST_LAYOUT_FILE, UTILITIES_FILE), lang = 'cs'): string {
   const wrapperName = site && site.name !== 'PostLayout' ? site.name : 'SiteLayout';
   const frontmatter = `---
 /**
@@ -140,7 +140,7 @@ const variant = header === 'cover' && !cover ? 'classic' : header;
   const indent = (s: string, n: number) => s.split('\n').map(l => (l ? ' '.repeat(n) + l : l)).join('\n');
   const body = site
     ? `<${wrapperName} title={title}>\n${indent(article, 2)}\n</${wrapperName}>`
-    : `<html lang="en">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <title>{title}</title>\n  </head>\n  <body class="m-0">\n${indent(article, 4)}\n  </body>\n</html>`;
+    : `<html lang="${lang}">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <title>{title}</title>\n  </head>\n  <body class="m-0">\n${indent(article, 4)}\n  </body>\n</html>`;
   return `${frontmatter}\n\n${body}\n`;
 }
 
@@ -185,7 +185,9 @@ export function planPostLayout(
     if (read(UTILITIES_FILE) == null) writes[UTILITIES_FILE] = '';
     if (existing == null) {
       const ref = site ? { name: site.name, importPath: rebaseImportSpecifier(site.importPath, siteFrom, file) } : null;
-      writes[file] = postLayoutSource(ref, importSpecifierFor(file, UTILITIES_FILE));
+      const home = read('src/pages/index.astro') ?? read('src/layouts/Layout.astro') ?? '';
+      const lang = home.match(/<html\b[^>]*\blang=["']([a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*)["']/i)?.[1] ?? 'cs';
+      writes[file] = postLayoutSource(ref, importSpecifierFor(file, UTILITIES_FILE), lang);
     }
     return { file, writes };
   }
@@ -203,6 +205,8 @@ const FROZEN_LAYOUTS: Record<string, { bodyClasses: string; coverWide: string; s
   // v1 shipped in more than one BODY variant (a media rule was added without
   // a marker bump), so the body test is "every class is one v1 ever wrote"
   'sq-post-layout-v1': { bodyClasses: `${COLUMN} ${V1_BODY}`, coverWide: V1_COVER_WIDE, subtitlePick: V1_SUBTITLE_PICK },
+  // v2 is the current article look, with the bare shell still in English.
+  'sq-post-layout-v2': { bodyClasses: `${COLUMN} ${BODY}`, coverWide: HEADER.coverWide, subtitlePick: SUBTITLE_PICK },
 };
 
 /** An older layout of ours → the current literals. null = nothing to upgrade. */
@@ -217,5 +221,6 @@ export function upgradePostLayout(src: string): string | null {
       cls.split(/\s+/).every(t => known.has(t)) ? `<div class="${COLUMN} ${BODY}">${rest}` : whole)
     .split(`'${old.coverWide}'`).join(`'${HEADER.coverWide}'`)
     .split(old.subtitlePick).join(SUBTITLE_PICK)
+    .replace(/<html lang="en">/g, '<html lang="cs">')
     .replace(marker, POST_LAYOUT_MARKER);
 }

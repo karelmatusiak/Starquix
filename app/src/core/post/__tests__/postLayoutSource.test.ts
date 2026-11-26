@@ -24,7 +24,9 @@ describe('PostLayout source', () => {
   it('wraps the site layout; without one it brings a margin-free html shell', () => {
     expect(src).toContain('<Layout title={title}>');
     const bare = postLayoutSource(null);
+    expect(bare).toContain('<html lang="cs">');
     expect(bare).toContain('<body class="m-0">');
+    expect(postLayoutSource(null, undefined, 'de')).toContain('<html lang="de">');
     expect(bare).not.toContain('import Layout');
   });
   it('a site layout itself named PostLayout never self-imports', () => {

@@ -237,8 +237,9 @@ it('18. scripts: the account\'s Worker names with their immutable tags', async (
   expect(await c.scripts('a1')).toEqual([{ name: 'my-site', tag: 't1' }, { name: 'api', tag: 't2' }]);
 });
 
-it('C2. upload: manifest (32-hex sha256 of base64+ext, size) → buckets with the UPLOAD jwt as base64 parts typed for serving → assets-only PUT', async () => {
+it('C2. upload: manifest (32-hex sha256 of base64+ext, size) → buckets with the UPLOAD jwt as base64 parts typed for serving → Worker with assets and /api/kontakt', async () => {
   const uploads = [];
+  let worker = null;
   const { c, calls } = client({
     'POST /accounts/a1/workers/scripts/my-site/assets-upload-session': ({ body }) => {
       expect(body).toEqual({ manifest: {
@@ -257,15 +258,19 @@ it('C2. upload: manifest (32-hex sha256 of base64+ext, size) → buckets with th
     },
     'PUT /accounts/a1/workers/scripts/my-site': ({ init }) => {
       expect(init.headers.authorization).toBe('Bearer tok');
-      expect([...init.body.keys()]).toEqual(['metadata']);
+      expect([...init.body.keys()]).toEqual(['metadata', 'worker.js']);
       expect(JSON.parse(init.body.get('metadata'))).toEqual({
+        main_module: 'worker.js',
         assets: { jwt: 'completion-jwt', config: { html_handling: 'auto-trailing-slash', not_found_handling: '404-page' } },
+        bindings: [{ type: 'assets', name: 'ASSETS' }],
         compatibility_date: '2026-09-01',
       });
+      worker = init.body.get('worker.js');
       return cf({ id: 'my-site', tag: 'tag-1' });
     },
   });
   expect(await c.upload('a1', 'my-site', FILES)).toBe('tag-1');
+  expect(await worker.text()).toContain("pathname === '/api/kontakt'");
   expect(uploads).toEqual([
     [{ hash: sha(FILES[0].bytes, 'html'), type: 'text/html', text: FILES[0].bytes.toString('base64') },
       { hash: sha(FILES[1].bytes, 'css'), type: 'text/css', text: FILES[1].bytes.toString('base64') }],

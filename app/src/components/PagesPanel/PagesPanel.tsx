@@ -9,9 +9,11 @@ import { DRAG_TYPES } from '@/types/drag';
 import { Row, Button, SortableTreeProvider } from '@/components/ui';
 import { PlusIcon } from '@/assets/icons';
 import { AresWindow } from '@/components/AresWindow';
+import { ContactWindow } from '@/components/ContactWindow';
 
 export function PagesPanel() {
   const [aresOpen, setAresOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const { pages, rootPageIds, createPage, movePage } = usePages();
   const doc = useEditorDoc();
 
@@ -49,6 +51,20 @@ export function PagesPanel() {
                   aria-label="Point a .cz domain at Cloudflare"
                   title="Point a .cz domain at Cloudflare"
                   onClick={() => window.open('/domena-cz.html', '_blank', 'noopener,noreferrer')}
+                />
+              ),
+            },
+            {
+              type: 'custom',
+              unboxed: true,
+              node: (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  label="Form"
+                  aria-label="Contact form"
+                  title="Contact form"
+                  onClick={() => setContactOpen(true)}
                 />
               ),
             },
@@ -108,6 +124,7 @@ export function PagesPanel() {
         </div>
       </div>
       <AresWindow isOpen={aresOpen} onClose={() => setAresOpen(false)} />
+      <ContactWindow isOpen={contactOpen} onClose={() => setContactOpen(false)} />
     </SortableTreeProvider>
   );
 }

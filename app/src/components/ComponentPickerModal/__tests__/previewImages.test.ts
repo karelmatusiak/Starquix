@@ -66,7 +66,7 @@ describe('resolvePreviewImage', () => {
   });
 
   it('every built-in section, nav bar and Embed has a generated preview', () => {
-    for (const name of ['GlobalNav', 'GlobalNav2', 'Embed', 'Pricing2', 'classic--GlobalNav']) {
+    for (const name of ['GlobalNav', 'GlobalNav2', 'Embed', 'Pricing2', 'classic--GlobalNav', 'CzHeroRemeslo', 'CzCenik', 'CzKontakt', 'CzLegalFooter']) {
       expect(getPreviewImage(name), name).toBeTruthy();
     }
   });

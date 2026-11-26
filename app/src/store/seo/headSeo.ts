@@ -825,7 +825,7 @@ export function editPageSeo(
       const headF = chain.head?.info;
       if (!headF) {
         if (postMode) throw new SeoEditError(`${page.file} renders no <head>`);
-        push(page, ...wrapDocument(page, spec.literal(value as string)));
+        push(page, ...wrapDocument(page, spec.literal(value as string), documentLang(sources)));
         break;
       }
       const headTag = headF.tags[chain.head!.tag];
@@ -870,13 +870,22 @@ function entryExpr(chain: Chain): string {
   return reads(base, 'frontmatter') && !reads(base, 'data') ? `${base}.frontmatter` : `${base}.data`;
 }
 
+/** The language already used on a page in this project, otherwise Czech. */
+function documentLang(sources: Record<string, string | null | undefined>): string {
+  for (const text of Object.values(sources)) {
+    const match = text?.match(/<html\b[^>]*\blang=["']([a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*)["']/i);
+    if (match) return match[1];
+  }
+  return 'cs';
+}
+
 /** A page with no head and no layout becomes the scaffold document shape. */
-function wrapDocument(page: FileInfo, tag: string): Splice[] {
+function wrapDocument(page: FileInfo, tag: string, lang: string): Splice[] {
   const start = page.fm?.templateStart ?? 0;
   const body = page.src.slice(start).replace(/^\s*\n/, '').replace(/\s+$/, '');
   return [{
     start, end: page.src.length,
-    text: `<html lang="en">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    ${tag}\n  </head>\n  <body>\n${body}\n  </body>\n</html>\n`,
+    text: `<html lang="${lang}">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    ${tag}\n  </head>\n  <body>\n${body}\n  </body>\n</html>\n`,
   }];
 }
 

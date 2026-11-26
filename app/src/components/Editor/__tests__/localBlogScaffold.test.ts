@@ -56,7 +56,7 @@ describe('ensurePostLayout (design A1)', () => {
   it('writes src/layouts/PostLayout.astro wrapping the site layout (import re-based to the layout file) + the utilities companion', async () => {
     expect(await ensurePostLayout({ name: 'Layout1', importPath: '../layouts/Layout1.astro' }, 'src/pages/blog.astro')).toBe('src/layouts/PostLayout.astro');
     const src = h.files['src/layouts/PostLayout.astro'];
-    expect(src).toContain('sq-post-layout-v2');
+    expect(src).toContain('sq-post-layout-v3');
     expect(src).toContain("import Layout1 from './Layout1.astro';");
     expect(src).toContain("import '../components/sq/sq-utilities.css';");
     expect(src).toContain('<Layout1 title={title}>');
@@ -74,7 +74,7 @@ describe('ensurePostLayout (design A1)', () => {
   });
   it('no site layout → PostLayout brings its own html shell', async () => {
     await ensurePostLayout(null, 'src/pages/index.astro');
-    expect(h.files['src/layouts/PostLayout.astro']).toContain('<html lang="en">');
+    expect(h.files['src/layouts/PostLayout.astro']).toContain('<html lang="cs">');
   });
 });
 

@@ -84,7 +84,7 @@ test('C1/C3: nothing published → Publish to Cloudflare (one click) → built l
     await expect(page.getByText('Everything is published')).toBeVisible(); // ledger 41: the build left the folder clean
     expect(await app.evaluate(({ app: electronApp }) => electronApp.userAgentFallback)).not.toMatch(/Electron\//); // ledger 12: popups too
 
-    // What reached "Cloudflare": Astro's dist only, typed for serving, as an assets-only Worker.
+    // What reached "Cloudflare": Astro's dist only, typed for serving, plus the contact Worker.
     const paths = Object.keys(api.got.manifest);
     expect(paths).toContain('/index.html');
     expect(paths.some(p => /node_modules|\/\.sq\/|\.astro\/|astro\.config/.test(p))).toBe(false);
@@ -92,8 +92,12 @@ test('C1/C3: nothing published → Publish to Cloudflare (one click) → built l
     expect(index.type).toBe('text/html; charset=utf-8');
     expect(Buffer.from(index.base64, 'base64').toString()).toContain('Release fixture');
     expect(api.got.files.size).toBe(new Set(Object.values(api.got.manifest).map(f => f.hash)).size);
-    expect(api.got.metadata).toEqual({ assets: { jwt: 'completion-jwt', config: { html_handling: 'auto-trailing-slash', not_found_handling: '404-page' } },
-      compatibility_date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) });
+    expect(api.got.metadata).toEqual({
+      main_module: 'worker.js',
+      assets: { jwt: 'completion-jwt', config: { html_handling: 'auto-trailing-slash', not_found_handling: '404-page' } },
+      bindings: [{ type: 'assets', name: 'ASSETS' }],
+      compatibility_date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+    });
     const files = path.join(temp, 'projects', id);
     const cfg = async key => (await git('-C', files, 'config', key)).trim(); // repo-local, never pushed
     expect(await cfg('starquix.host')).toBe('cloudflare');

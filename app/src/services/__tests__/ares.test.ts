@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { fetchAres, fillFirmaMarkers, isValidIco } from '../ares';
+import { fetchAres, fillFirmaMarkers, hoursSummary, isValidIco, schemaHours, type DayHours } from '../ares';
 
 describe('IČO', () => {
   it('accepts a real checksum and rejects a tampered digit', () => {
@@ -26,16 +26,31 @@ describe('IČO', () => {
     const source = `<p data-sq-firma="nazev">Firma</p><p data-sq-firma="ico">0</p>`
       + `<a data-sq-firma="mapa" href="https://mapy.cz/">Mapa</a>`
       + `<script type="application/ld+json" data-sq-firma-ld>{"@type":"LocalBusiness","name":"Firma"}</script>`;
-    const next = fillFirmaMarkers(source, {
+    const hours: DayHours[] = [
+      { id: 'Mo', open: '09:00', close: '17:00', closed: false },
+      { id: 'Tu', open: '09:00', close: '17:00', closed: false },
+      { id: 'We', open: '09:00', close: '17:00', closed: false },
+      { id: 'Th', open: '09:00', close: '17:00', closed: false },
+      { id: 'Fr', open: '09:00', close: '17:00', closed: false },
+      { id: 'Sa', open: '', close: '', closed: true },
+      { id: 'Su', open: '', close: '', closed: true },
+    ];
+    const next = fillFirmaMarkers(source + `<p data-sq-firma="openingHours">dříve</p><div data-sq-day="Mo"><dt>Pondělí</dt><dd>x</dd></div>`, {
       ico: '27082440', nazev: 'Alza.cz a.s.', dic: 'CZ27082440', adresa: 'Jankovcova 1522/53',
-      telefon: '', email: '', openingHours: 'Mo-Fr 09:00-17:00', cookies: false,
+      telefon: '+420 777 000 000', email: 'obchod@alza.cz', website: 'alza.cz', hours, cookies: false,
     });
     expect(next).toContain('>Alza.cz a.s.<');
     expect(next).toContain('>27082440<');
     expect(next).toContain('q=Jankovcova%201522');
     expect(next).toContain('"taxID": "CZ27082440"');
+    expect(next).toContain('"Mo 09:00-17:00"');
+    expect(next).not.toContain('Mo-Fr 08:00-17:00');
+    expect(next).toContain('>9:00–17:00<');
+    expect(next).toContain('Po–Pá 9:00–17:00');
+    expect(schemaHours(hours)).toEqual(['Mo 09:00-17:00', 'Tu 09:00-17:00', 'We 09:00-17:00', 'Th 09:00-17:00', 'Fr 09:00-17:00']);
+    expect(hoursSummary(hours)).toBe('Po–Pá 9:00–17:00');
     const single = fillFirmaMarkers(`<span data-sq-firma='nazev'>Firma</span>`, {
-      ico: '27082440', nazev: 'Alza.cz a.s.', dic: '', adresa: '', telefon: '', email: '', openingHours: '', cookies: false,
+      ico: '27082440', nazev: 'Alza.cz a.s.', dic: '', adresa: '', telefon: '', email: '', website: '', hours, cookies: false,
     });
     expect(single).toContain('>Alza.cz a.s.<');
     expect(single).not.toContain('>Firma<');
