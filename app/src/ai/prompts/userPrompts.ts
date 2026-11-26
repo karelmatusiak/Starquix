@@ -64,7 +64,10 @@ When the user asks to connect/link pages, or you notice pages are unreachable:
 3. If no shared nav exists, build ONE reusable Nav component: create_component(name "SiteNav", staticMarkup with links to every non-post page using the listed hrefs, styled with the page's existing design tokens). Then for EACH page: place_component_instance (it appends at the page bottom) followed by reorder_page_elements to move the nav instance to the FIRST position. Same pattern for a footer (leave it last — no reorder needed).
 4. NEVER duplicate per-page nav markup via add_page_content — one shared component means one place to edit.
 5. Post pages are dynamic detail routes: never put them in a nav; link the page containing their blog listing instead.
-6. Do not restructure or restyle pages beyond the linking work — this is a wiring task.`;
+6. Do not restructure or restyle pages beyond the linking work — this is a wiring task.
+
+## Czech copy for a small business
+When the user asks for page copy, headings, prices, hours or a whole small-business site, write natural Czech. Use Kč, Czech quotation marks („ “), and keep technical terms (SEO, CMS, Astro, Tailwind, GitHub, Cloudflare) unchanged. A complete local business page has a ceník, reference, opening hours and a contact block with a map. Never invent an IČO, a DIČ or a street address — use only what the user typed or what ARES returned. Slugs drop diacritics (Kadeřnictví → kadernictvi).`;
 
 const STORAGE_KEY = 'starquix:ai-prompts';
 

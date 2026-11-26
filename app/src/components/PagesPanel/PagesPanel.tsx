@@ -1,4 +1,5 @@
 // src/components/PagesPanel/PagesPanel.tsx
+import { useState } from 'react';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { usePages } from '@/context/PagesContext';
 import { useEditorDoc } from '@/store/hooks';
@@ -7,8 +8,10 @@ import { PageTreeNode } from './PageTreeNode';
 import { DRAG_TYPES } from '@/types/drag';
 import { Row, Button, SortableTreeProvider } from '@/components/ui';
 import { PlusIcon } from '@/assets/icons';
+import { AresWindow } from '@/components/AresWindow';
 
 export function PagesPanel() {
+  const [aresOpen, setAresOpen] = useState(false);
   const { pages, rootPageIds, createPage, movePage } = usePages();
   const doc = useEditorDoc();
 
@@ -35,6 +38,34 @@ export function PagesPanel() {
           size="sm"
           className="pl-3 pr-1"
           right={[
+            {
+              type: 'custom',
+              unboxed: true,
+              node: (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  label="Doména .cz"
+                  aria-label="Point a .cz domain at Cloudflare"
+                  title="Point a .cz domain at Cloudflare"
+                  onClick={() => window.open('/domena-cz.html', '_blank', 'noopener,noreferrer')}
+                />
+              ),
+            },
+            {
+              type: 'custom',
+              unboxed: true,
+              node: (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  label="IČO"
+                  aria-label="Company from ARES"
+                  onClick={() => setAresOpen(true)}
+                  title="Company from ARES"
+                />
+              ),
+            },
             {
               type: 'custom',
               unboxed: true,
@@ -76,6 +107,7 @@ export function PagesPanel() {
           )}
         </div>
       </div>
+      <AresWindow isOpen={aresOpen} onClose={() => setAresOpen(false)} />
     </SortableTreeProvider>
   );
 }

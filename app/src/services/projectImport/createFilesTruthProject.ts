@@ -96,11 +96,11 @@ export const SCAFFOLD_FILES: Record<string, string> = {
     '',
   ].join('\n'),
   'src/pages/index.astro': [
-    '<html lang="en">',
+    '<html lang="cs">',
     '  <head>',
     '    <meta charset="utf-8" />',
     '    <meta name="viewport" content="width=device-width, initial-scale=1" />',
-    '    <title>Home</title>',
+    '    <title>Domů</title>',
     '  </head>',
     '  <body></body>',
     '</html>',

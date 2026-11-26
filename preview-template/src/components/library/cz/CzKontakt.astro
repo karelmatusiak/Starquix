@@ -1,0 +1,54 @@
+---
+/**
+ * @category Feature
+ * @theme starquix
+ * @name CzKontakt
+ */
+---
+<section id='kontakt' class='bg-stone-50 px-4 py-16 md:px-10 md:py-24 dark:bg-stone-900'>
+  <h2 class='m-0 font-sans text-3xl font-semibold text-stone-900 md:text-5xl dark:text-stone-50'>Kontakt</h2>
+  <div class='mt-8 grid gap-8 md:grid-cols-2'>
+    <div class='font-sans text-base text-stone-800 dark:text-stone-200'>
+      <p class='m-0' data-sq-firma='adresa'>Náměstí 1, 110 00 Praha</p>
+      <p class='m-0 mt-2'><a data-sq-firma='telefon' href='tel:+420777000000'>+420 777 000 000</a></p>
+      <p class='m-0 mt-2'><a data-sq-firma='email' href='mailto:ahoj@example.cz'>ahoj@example.cz</a></p>
+      <p class='m-0 mt-4'><a data-sq-firma='mapa' href='https://mapy.cz/zakladni?q=Praha'>Ukázat na mapě</a></p>
+      <iframe title='Mapa' class='mt-4 h-64 w-full rounded-lg border-0' src='https://www.openstreetmap.org/export/embed.html?bbox=14.40%2C50.05%2C14.50%2C50.12&amp;layer=mapnik'></iframe>
+    </div>
+    <form class='flex flex-col gap-3' method='post' action='/api/kontakt' data-sq-contact>
+      <label class='font-sans text-sm text-stone-600 dark:text-stone-400'>Jméno
+        <input class='mt-1 w-full rounded-lg border border-solid border-stone-300 bg-white px-3 py-2 text-base text-stone-900' name='jmeno' required autocomplete='name' />
+      </label>
+      <label class='font-sans text-sm text-stone-600 dark:text-stone-400'>E-mail
+        <input class='mt-1 w-full rounded-lg border border-solid border-stone-300 bg-white px-3 py-2 text-base text-stone-900' name='email' type='email' required autocomplete='email' />
+      </label>
+      <label class='font-sans text-sm text-stone-600 dark:text-stone-400'>Zpráva
+        <textarea class='mt-1 w-full rounded-lg border border-solid border-stone-300 bg-white px-3 py-2 text-base text-stone-900' name='zprava' rows='4' required></textarea>
+      </label>
+      <input class='absolute -left-[9999px]' name='website' tabindex='-1' autocomplete='off' aria-hidden='true' />
+      <button class='inline-flex min-h-12 items-center justify-center rounded-lg bg-yellow-400 px-6 font-sans text-base font-semibold text-stone-900' type='submit'>Odeslat</button>
+      <p class='m-0 font-sans text-sm text-stone-500' data-sq-contact-status></p>
+    </form>
+  </div>
+  <script>
+    const form = document.querySelector('[data-sq-contact]');
+    const status = document.querySelector('[data-sq-contact-status]');
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      if (String(data.get('website') || '').trim()) return;
+      try {
+        const response = await fetch('/api/kontakt', { method: 'POST', body: data });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body.error || '');
+        form.reset();
+        if (status) status.textContent = 'Děkujeme, ozveme se.';
+      } catch (error) {
+        const email = document.querySelector('[data-sq-firma="email"]')?.textContent || '';
+        if (status) status.textContent = email
+          ? `Teď to nešlo odeslat. Napište na ${email}.`
+          : 'Teď to nešlo odeslat. Zkuste to prosím později.';
+      }
+    });
+  </script>
+</section>

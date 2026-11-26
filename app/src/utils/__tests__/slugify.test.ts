@@ -30,8 +30,10 @@ describe('slugify (shared editor/export page-slug source)', () => {
     expect(slugify('!!!@@@###')).toBe('untitled');
   });
 
-  it('strips non-ascii letters (matches historical export behavior)', () => {
-    expect(slugify('Über Uns')).toBe('ber-uns');
+  it('folds Latin diacritics so a Czech name stays one word', () => {
+    expect(slugify('Über Uns')).toBe('uber-uns');
+    expect(slugify('Kadeřnictví a kosmetika')).toBe('kadernictvi-a-kosmetika');
+    expect(slugify('Příliš žluťoučký')).toBe('prilis-zlutoucky');
   });
 
   it('keeps near-collisions distinct (Q&A vs QA) — why export semantics won', () => {

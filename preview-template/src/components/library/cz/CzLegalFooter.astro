@@ -1,0 +1,29 @@
+---
+/**
+ * @category Footer
+ * @theme starquix
+ * @name CzLegalFooter
+ * Patička s údaji z ARES. data-sq-cookies="on" zapne lištu souhlasu.
+ */
+---
+<footer class='bg-stone-900 px-4 py-10 text-stone-100 md:px-10'>
+  <p class='m-0 font-sans text-lg font-semibold' data-sq-firma='nazev'>Vaše firma</p>
+  <p class='m-0 mt-2 font-sans text-sm text-stone-300'>IČO <span data-sq-firma='ico'>00000000</span> · DIČ <span data-sq-firma='dic'>CZ00000000</span></p>
+  <p class='m-0 mt-1 font-sans text-sm text-stone-300' data-sq-firma='adresa'>Náměstí 1, 110 00 Praha</p>
+  <p class='m-0 mt-4 font-sans text-sm'><a class='text-stone-100' href='/ochrana-osobnich-udaju'>Ochrana osobních údajů</a></p>
+  <script type="application/ld+json" data-sq-firma-ld>{"@context":"https://schema.org","@type":"LocalBusiness","name":"Vaše firma","taxID":"","telephone":"","email":"","address":{"@type":"PostalAddress","streetAddress":"Náměstí 1, 110 00 Praha","addressCountry":"CZ"},"openingHours":"Mo-Fr 08:00-17:00"}</script>
+  <div data-sq-cookies="off" id="sq-cookie" class='fixed inset-x-0 bottom-0 z-50 border-0 border-t border-solid border-stone-200 bg-stone-50 px-4 py-3 font-sans text-sm text-stone-900' hidden>
+    <p class='m-0'>Na webu používáme jen to, co je potřeba k návštěvě. Nepovinné měření a vložené služby třetích stran zapneme, až odsouhlasíte.</p>
+    <button type='button' id='sq-cookie-ok' class='mt-2 inline-flex min-h-10 items-center rounded-lg bg-stone-900 px-4 text-stone-50'>Souhlasím</button>
+  </div>
+  <script>
+    const bar = document.getElementById('sq-cookie');
+    const host = bar?.getAttribute('data-sq-cookies');
+    const thirdParty = document.querySelector('iframe[src*="openstreetmap.org"], iframe[src*="youtube.com"], iframe[src*="vimeo.com"], script[src*="googletagmanager.com"], script[src*="google-analytics.com"]');
+    if (bar && (host === 'on' || thirdParty) && localStorage.getItem('sq-cookie') !== 'ok') bar.hidden = false;
+    document.getElementById('sq-cookie-ok')?.addEventListener('click', () => {
+      localStorage.setItem('sq-cookie', 'ok');
+      if (bar) bar.hidden = true;
+    });
+  </script>
+</footer>

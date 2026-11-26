@@ -14,7 +14,11 @@ describe('writeLocalFile root config allowlist', () => {
     await writeLocalFile(root, file, 'x\n');
     expect(readFileSync(join(root, file), 'utf8')).toBe('x\n');
   });
-  it.each(['tsconfig.json', 'nested/package.json', '../package.json', '.env', 'src/../.env'])('still refuses %s', async (file) => {
+  it.each(['tsconfig.json', 'nested/package.json', '../package.json', '.env', 'src/../.env', 'functions/api/other.js'])('still refuses %s', async (file) => {
     await expect(writeLocalFile(root, file, 'x')).rejects.toThrow(/outside/);
+  });
+  it('writes the generated contact endpoint and nothing else under functions/', async () => {
+    await writeLocalFile(root, 'functions/api/kontakt.js', 'export {}\n');
+    expect(readFileSync(join(root, 'functions/api/kontakt.js'), 'utf8')).toBe('export {}\n');
   });
 });

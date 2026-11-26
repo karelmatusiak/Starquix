@@ -15,6 +15,12 @@ export const PAGE_TEMPLATES: PageTemplatePreset[] = [
   { id: 'pricing', name: 'Pricing page', components: ['Header', 'Pricing', 'FAQ', 'CTA', 'Footer'] },
   { id: 'about-contact', name: 'About / Contact', components: ['Header', 'Team', 'Metrics', 'Testimonials2', 'CTA', 'Footer'] },
   { id: 'product-detail', name: 'Product detail', components: ['Header', 'Hero3', 'Feature2', 'Metrics2', 'Pricing2', 'FAQ', 'CTA', 'Footer'] },
+  { id: 'cz-remeslnik', name: 'Řemeslník', components: ['CzNav', 'CzHeroRemeslo', 'CzSluzby', 'CzCenik', 'CzHodiny', 'CzReference', 'CzKontakt', 'CzLegalFooter'] },
+  { id: 'cz-kadernictvi', name: 'Kadeřnictví', components: ['CzNav', 'CzHeroKadernictvi', 'CzSluzby', 'CzCenik', 'CzHodiny', 'CzReference', 'CzKontakt', 'CzLegalFooter'] },
+  { id: 'cz-kavarna', name: 'Kavárna', components: ['CzNav', 'CzHeroKavarna', 'CzSluzby', 'CzCenik', 'CzHodiny', 'CzReference', 'CzKontakt', 'CzLegalFooter'] },
+  { id: 'cz-penzion', name: 'Penzion', components: ['CzNav', 'CzHeroPenzion', 'CzSluzby', 'CzCenik', 'CzHodiny', 'CzReference', 'CzKontakt', 'CzLegalFooter'] },
+  { id: 'cz-osvc', name: 'Konzultant', components: ['CzNav', 'CzHeroOsvc', 'CzSluzby', 'CzCenik', 'CzHodiny', 'CzReference', 'CzKontakt', 'CzLegalFooter'] },
+  { id: 'cz-ochrana', name: 'Ochrana osobních údajů', components: ['CzNav', 'CzOchrana', 'CzLegalFooter'] },
 ];
 
 /** Resolve a preset against the scanned library, preserving preset order. */

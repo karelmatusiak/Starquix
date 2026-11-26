@@ -14,9 +14,9 @@ const comp = (name: string): ScannedComponent => ({
 });
 
 describe('PAGE_TEMPLATES', () => {
-  it('has 5 presets with unique ids and >=2 components each', () => {
-    expect(PAGE_TEMPLATES).toHaveLength(5);
-    expect(new Set(PAGE_TEMPLATES.map((p) => p.id)).size).toBe(5);
+  it('has the original presets plus the Czech small-business sites', () => {
+    expect(PAGE_TEMPLATES).toHaveLength(11);
+    expect(new Set(PAGE_TEMPLATES.map((p) => p.id)).size).toBe(11);
     for (const p of PAGE_TEMPLATES) expect(p.components.length).toBeGreaterThanOrEqual(2);
   });
 });
