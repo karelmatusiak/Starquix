@@ -244,10 +244,10 @@ function PageTemplateCard({ preset, isSelected, onSelect, onHover, innerRef }: {
             <img key={i} src={src} alt="" className="w-full flex-1 min-h-0 object-cover object-top" />
           ))
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-text-secondary text-xs">{preset.name}</div>
+          <div className="w-full h-full flex items-center justify-center text-text-secondary text-xs">{t(preset.name)}</div>
         )}
       </div>
-      <div className="text-xs text-text-secondary truncate">{preset.name}</div>
+      <div className="text-xs text-text-secondary truncate">{t(preset.name)}</div>
       <div className="text-xs text-text-secondary truncate">{preset.components.length} sections</div>
     </div>
   );

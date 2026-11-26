@@ -10,9 +10,10 @@
  * (export/deploy.ts) — separate domains with different character rules.
  */
 
-/** Lowercase, collapse non-alphanumeric runs to single hyphens, trim hyphens. */
+/** Lowercase, fold Czech (and other Latin) diacritics, collapse the rest to hyphens. */
 export function slugify(text: string): string {
-  const result = text
+  const folded = text.normalize('NFD').replace(/\p{M}/gu, '').replace(/ł/gi, 'l');
+  const result = folded
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');

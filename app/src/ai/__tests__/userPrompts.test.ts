@@ -22,6 +22,8 @@ describe('DEFAULT_SYSTEM_PROMPT guardrails', () => {
 
   it('DEFAULT_SYSTEM_PROMPT contains the Connecting Pages playbook', () => {
     expect(DEFAULT_SYSTEM_PROMPT).toContain('## Connecting Pages');
+    expect(DEFAULT_SYSTEM_PROMPT).toContain('## Czech copy for a small business');
+    expect(DEFAULT_SYSTEM_PROMPT).toContain('Never invent an IČO');
     expect(DEFAULT_SYSTEM_PROMPT).toContain('reorder_page_elements');
   });
 

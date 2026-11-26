@@ -39,9 +39,10 @@ function rewriteFile(abs, compute) {
 
 // ── shared client/server rules (mirrors app/src/utils/{slugify,localMode}.ts) ──
 
-/** Lowercase, collapse non-alphanumeric runs to single hyphens, trim hyphens. */
+/** Lowercase, fold Czech (and other Latin) diacritics, collapse the rest to hyphens. */
 export function slugify(text) {
-  const result = text
+  const folded = text.normalize('NFD').replace(/\p{M}/gu, '').replace(/ł/gi, 'l');
+  const result = folded
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
@@ -310,7 +311,7 @@ export function createLocalPage(dir, name, prepare = false, overlay) {
   const title = slug === base ? (name.trim() || slug) : `${name.trim() || base} ${n - 1}`;
   const content = `---
 ---
-<html lang="en">
+<html lang="cs">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -771,7 +772,9 @@ export async function writeLocalFile(dir, file, content) {
   const inPublic = abs.startsWith(path.join(root, 'public') + path.sep);
   // The site's own settings the editor owns a line of (SEO: `site:`, the sitemap integration + its package).
   const rootConfig = path.dirname(abs) === root && /^(astro\.config\.(mjs|mts|ts|js|cjs)|package\.json)$/.test(path.basename(abs));
-  if (!inSrc && !inPublic && !rootConfig) throw new Error('path outside src/ or public/');
+  // The contact endpoint generated with a Czech site. Nothing else under functions/.
+  const contactFn = path.relative(root, abs).replace(/\\/g, '/') === 'functions/api/kontakt.js';
+  if (!inSrc && !inPublic && !rootConfig && !contactFn) throw new Error('path outside src/ or public/');
   if (/[\\/](node_modules|\.sq)[\\/]/.test(abs + path.sep)) throw new Error('path refused');
   mkdirSync(path.dirname(abs), { recursive: true });
   await rewriteFile(abs, () => content);

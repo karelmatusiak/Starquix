@@ -28,7 +28,7 @@ const { pageSize = 3 } = Astro.props;
     // `.flex` / `.block` would stay visible (live-measured 2026-09-12).
     const apply = () => {
       const cards = Array.from(grid.children);
-      cards.forEach((el, i) => { el.style.display = i >= shown ? 'none' : ''; });
+      cards.forEach((el, i) => { el.style.display = i >= shown ? 'none' : ''; });
       box.style.display = clicked && shown >= cards.length ? 'none' : '';
     };
     button.addEventListener('click', () => { clicked = true; shown += pageSize; apply(); });

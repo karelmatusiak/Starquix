@@ -998,7 +998,7 @@ export function AssetsPanel({ activeComponentPath, onSelectComponent, onClearCom
     let name = 'Layout1';
     while (taken.has(name)) { index++; name = `Layout${index}`; }
 
-    const astroContent = `---\nimport '../styles/global.css';\ninterface Props { title?: string; }\nconst { title = '${name}' } = Astro.props;\n---\n\n<!doctype html>\n<html lang="en">\n  <head>\n    <meta charset="UTF-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n    <title>{title}</title>\n  </head>\n  <body>\n    <slot />\n    <script is:inline src="/scripts/bridge.js"></script>\n  </body>\n</html>\n`;
+    const astroContent = `---\nimport '../styles/global.css';\ninterface Props { title?: string; }\nconst { title = '${name}' } = Astro.props;\n---\n\n<!doctype html>\n<html lang="cs">\n  <head>\n    <meta charset="UTF-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n    <title>{title}</title>\n  </head>\n  <body>\n    <slot />\n    <script is:inline src="/scripts/bridge.js"></script>\n  </body>\n</html>\n`;
 
     const projectId = doc.getMap('meta').get('projectId');
     const durable = typeof projectId === 'string' && isLocalProjectId(projectId);

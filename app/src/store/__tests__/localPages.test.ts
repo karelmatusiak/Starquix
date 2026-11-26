@@ -102,7 +102,7 @@ describe('createLocalDocPage (task-145)', () => {
     await acceptVariablesCss(projectId, folder, ':root { --ink: #111; }');
     await createLocalDocPage(newDoc(), folder, 'Pricing');
     await settle();
-    expect(rt.read('src/pages/pricing.astro')).toMatch(/^---\nimport '\.\.\/styles\/sq-variables\.css';\n---\n<html lang="en">/);
+    expect(rt.read('src/pages/pricing.astro')).toMatch(/^---\nimport '\.\.\/styles\/sq-variables\.css';\n---\n<html lang="cs">/);
   });
 
   it('a page file written whole (write_file) imports them too', async () => {
@@ -127,7 +127,7 @@ describe('createLocalDocPage (task-145)', () => {
     const rt = start({ 'src/pages/index.astro': HOME });
     await createLocalDocPage(newDoc(), folder, 'Pricing');
     await settle();
-    expect(rt.read('src/pages/pricing.astro')).toMatch(/^---\n---\n<html lang="en">/);
+    expect(rt.read('src/pages/pricing.astro')).toMatch(/^---\n---\n<html lang="cs">/);
   });
 
   // task-271: the AI's add_page switched the editor to the new page 80-150 ms

@@ -13,7 +13,7 @@ import { SECTION_ROW_CLS, SECTION_ICON_CLS, SECTION_CONTENT_CLS, shownValue } fr
 /** Starter JSON-LD per schema.org type (filled with the page's title/description; '@context' and '@type' added by fill). */
 const TEMPLATES: Record<string, (t: { name: string; description: string }) => object> = {
   Organization: ({ name, description }) => ({ name, description, url: '', logo: '', sameAs: [] }),
-  LocalBusiness: ({ name, description }) => ({ name, description, telephone: '', address: { '@type': 'PostalAddress', streetAddress: '', addressLocality: '', postalCode: '', addressCountry: '' }, openingHours: 'Mo-Fr 09:00-18:00' }),
+  LocalBusiness: ({ name, description }) => ({ name, description, telephone: '', address: { '@type': 'PostalAddress', streetAddress: '', addressLocality: '', postalCode: '', addressCountry: 'CZ' }, openingHours: 'Mo-Fr 08:00-17:00', priceRange: 'Kč' }),
   Product: ({ name, description }) => ({ name, description, image: '', offers: { '@type': 'Offer', price: '', priceCurrency: 'USD', availability: 'https://schema.org/InStock' } }),
   FAQPage: () => ({ mainEntity: [{ '@type': 'Question', name: '', acceptedAnswer: { '@type': 'Answer', text: '' } }] }),
   Article: ({ name, description }) => ({ headline: name, description, author: { '@type': 'Person', name: '' }, datePublished: '' }),

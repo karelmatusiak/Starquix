@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doména .cz na Cloudflare — Webdílna</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, sans-serif; line-height: 1.6; }
+    body { max-width: 48rem; margin: auto; padding: 2rem 1.25rem 4rem; }
+    h1, h2 { line-height: 1.2; } h2 { margin-top: 2rem; } li { margin-block: .5rem; }
+    a { text-underline-offset: .2em; } :focus-visible { outline: 2px solid; outline-offset: 4px; }
+    code { font-size: .95em; }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="/help.html">Nápověda</a></p>
+  <h1>Jak nasměrovat doménu .cz na Cloudflare</h1>
+  <p>Webdílna publikuje web jako Worker na adrese <code>něco.workers.dev</code>. Vlastní doména se k němu připojí, až je zóna v Cloudflare aktivní. Jména nameserverů si neopisujte z návodu — Cloudflare je ukáže u konkrétní zóny, každému účtu jiná.</p>
+  <h2>1. Zóna v Cloudflare</h2>
+  <ol>
+    <li>V Cloudflare zvolte Add site a zadejte doménu, třeba <code>kovarstvi-novak.cz</code>. Plán Free stačí.</li>
+    <li>Cloudflare vypíše dva nameservery. Nechte tu stránku otevřenou.</li>
+  </ol>
+  <h2>2. Nameservery u registrátora</h2>
+  <p>U všech tří registrátorů měníte nameservery (NS), ne jednotlivé A nebo CNAME záznamy. Záznamy pak spravuje Cloudflare.</p>
+  <ul>
+    <li><strong>Wedos.</strong> Klientská zóna → Domény → vaše doména → DNS záznamy, nebo záložka Nameservery. Přepněte na vlastní NS a vložte oba nameservery z Cloudflare. Uložte.</li>
+    <li><strong>Forpsi.</strong> Administrace → Domény → vyberte doménu → Nameservery / DNS. Zvolte vlastní nameservery a vložte oba z Cloudflare.</li>
+    <li><strong>Active24.</strong> Centrum zákazníka → Domény → Správa DNS. Přepněte na vlastní nameservery a vložte oba z Cloudflare.</li>
+  </ul>
+  <p>Změna se obvykle projeví do několika hodin, výjimečně do 24 hodin. V Cloudflare počkejte, až stav zóny bude Active.</p>
+  <h2>3. Připojení ve Webdílně</h2>
+  <ol>
+    <li>Publikujte web na Cloudflare. Adresa <code>workers.dev</code> má fungovat dřív, než řešíte vlastní doménu.</li>
+    <li>V publikaci přidejte doménu. Webdílna připojí apex i <code>www</code> k Workeru, jakmile je zóna aktivní. Certifikát doplní Cloudflare.</li>
+    <li>Když registrátor hlásí, že nameservery ještě nevidí, nic ve Webdílně znovu neplňte. Počkejte a zkuste připojení znovu.</li>
+  </ol>
+  <h2>Kontaktní formulář</h2>
+  <p>Jedním kliknutím se nahraje statický Worker. Soubor <code>functions/api/kontakt.js</code> běží až na Cloudflare Pages, a jen když v projektu nastavíte <code>CONTACT_WEBHOOK</code> na adresu, která přijme JSON se jménem, e-mailem a zprávou. Volitelně <code>TURNSTILE_SECRET</code> a site key ve formuláři. Než to nastavíte, formulář na webu nabídne e-mail z patičky.</p>
+  <p><a href="/help.html">Zpět do nápovědy</a></p>
+</main>
+</body>
+</html>
