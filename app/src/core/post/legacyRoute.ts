@@ -7,6 +7,8 @@ const indent = (s: string, n: number) => s.split('\n').map((l) => `${' '.repeat(
 /**
  * The route shape this module wrote BEFORE PostLayout — kept only to
  * recognise an untouched one and upgrade it (edited routes are never touched).
+ * The fingerprint stays lang="en": that is what those old files contain.
+ * New post layouts come from postLayoutSource and use the project language.
  */
 export function legacyPostRouteSource(collection: string, layout: { name: string; importPath: string } | null): string {
   const frontmatter = [

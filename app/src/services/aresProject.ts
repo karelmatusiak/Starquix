@@ -1,6 +1,6 @@
 import { localFetch } from '@/utils/sqLocalBase';
 import { writeLocalFile } from '@/utils/localElementSource';
-import { CONTACT_FUNCTION, fillFirmaMarkers, type Firma } from './ares';
+import { fillFirmaMarkers, type Firma } from './ares';
 
 const PATCH_FILES = [
   'src/components/CzNav.astro',
@@ -16,7 +16,7 @@ async function readText(file: string): Promise<string | null> {
   return response.text();
 }
 
-/** Writes firma.json, patches Czech sections already in the project, and adds the contact endpoint. */
+/** Writes firma.json and patches Czech sections already in the project. */
 export async function saveFirma(firma: Firma): Promise<void> {
   await writeLocalFile('src/data/firma.json', `${JSON.stringify(firma, null, 2)}\n`);
   for (const file of PATCH_FILES) {
@@ -25,5 +25,4 @@ export async function saveFirma(firma: Firma): Promise<void> {
     const next = fillFirmaMarkers(current, firma);
     if (next !== current) await writeLocalFile(file, next);
   }
-  await writeLocalFile('functions/api/kontakt.js', CONTACT_FUNCTION);
 }

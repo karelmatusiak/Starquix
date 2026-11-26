@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Field, Labeled, OperationNotice, Row } from '@/components/ui';
 import { Cancel, Form, Pane, Status, Window } from '@/components/DeployModal/publishParts';
-import { fetchAres, type AresFailure, type Firma } from '@/services/ares';
+import { DAY_LABEL, fetchAres, type AresFailure, type DayId, type Firma } from '@/services/ares';
 import { saveFirma } from '@/services/aresProject';
 
 const FAIL: Record<AresFailure | 'save', string> = {
@@ -23,6 +23,10 @@ export function AresWindow({ isOpen, onClose }: { isOpen: boolean; onClose: () =
     try { setFirma(await fetchAres(ico)); }
     catch (error) { setFirma(null); setFailure((error as { code?: AresFailure }).code ?? 'offline'); }
     finally { setBusy(false); }
+  };
+
+  const setDay = (id: DayId, patch: Partial<Firma['hours'][number]>) => {
+    setFirma((current) => current && { ...current, hours: current.hours.map((day) => day.id === id ? { ...day, ...patch } : day) });
   };
 
   const save = async () => {
@@ -53,11 +57,34 @@ export function AresWindow({ isOpen, onClose }: { isOpen: boolean; onClose: () =
               <Row hover={false} size="sm" title="Name" rightText={firma.nazev} />
               <Row hover={false} size="sm" title="Address" rightText={firma.adresa} />
               <Row hover={false} size="sm" title="DIČ" rightText={firma.dic || '—'} />
+              <div className="flex max-h-64 flex-col gap-4 overflow-y-auto">
+              <Labeled label="Phone">
+                <Field size="lg" value={firma.telefon} aria-label="Phone" onChange={(telefon) => setFirma({ ...firma, telefon })} />
+              </Labeled>
+              <Labeled label="Email">
+                <Field size="lg" value={firma.email} aria-label="Email" onChange={(email) => setFirma({ ...firma, email })} />
+              </Labeled>
+              <Labeled label="Website">
+                <Field size="lg" value={firma.website} aria-label="Website" placeholder="example.cz" onChange={(website) => setFirma({ ...firma, website })} />
+              </Labeled>
+              {firma.hours.map((day) => (
+                <Row key={day.id} hover={false} size="sm" title={DAY_LABEL[day.id]}
+                  right={[
+                    { type: 'toggle', value: !day.closed, 'aria-label': DAY_LABEL[day.id], onChange: (open: boolean) => setDay(day.id, { closed: !open }) },
+                    { type: 'custom', unboxed: true, node: day.closed ? null : (
+                      <span className="flex gap-1">
+                        <Field size="sm" value={day.open} aria-label={`${DAY_LABEL[day.id]} open`} onChange={(open) => setDay(day.id, { open })} />
+                        <Field size="sm" value={day.close} aria-label={`${DAY_LABEL[day.id]} close`} onChange={(close) => setDay(day.id, { close })} />
+                      </span>
+                    ) },
+                  ]} />
+              ))}
               <Row hover={false} size="sm" title="Show the cookie bar" right={[{ type: 'toggle', value: firma.cookies, onChange: (on: boolean) => setFirma({ ...firma, cookies: on }) }]} />
+              </div>
             </>
           )}
           {failure && <OperationNotice title={FAIL[failure]} />}
-          {saved && <OperationNotice title="The contact form is at functions/api/kontakt.js. It sends mail only after you set CONTACT_WEBHOOK on Cloudflare Pages." />}
+          {saved && <OperationNotice title="Company details are in the footer. Publish again so the live site picks them up." />}
         </Form>
       </Pane>
     </Window>

@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import { webcrypto } from 'node:crypto';
-import { writeFileSync } from 'node:fs';
+import { utimesSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { db } from '@/db';
@@ -101,7 +101,11 @@ it('preserves local ownership when a caller requests generated content config', 
 // consistent — and the queue moves on.
 it('keeps a multi-file field change atomic when a newer outside schema edit wins its config', async () => {
   await contentOps.addLocalCollectionField('posts', 'draft', false, 'boolean');
-  writeFileSync(join(runtime.root, config), '// external schema edit\n');
+  const outside = join(runtime.root, config);
+  writeFileSync(outside, '// external schema edit\n');
+  // Linux mtime can sit a few ms behind Date.now(), which made this write look older than the edit.
+  const later = new Date(Date.now() + 1000);
+  utimesSync(outside, later, later);
   await flushDurableSourceWrites(projectId);
   expect(runtime.read(post)).toBe(original); expect(runtime.read(second)).toBe(secondSource);
   expect(runtime.read(config)).toBe('// external schema edit\n'); expect(dispatched).toBe(0);

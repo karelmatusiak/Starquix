@@ -24,6 +24,7 @@ describe('DEFAULT_SYSTEM_PROMPT guardrails', () => {
     expect(DEFAULT_SYSTEM_PROMPT).toContain('## Connecting Pages');
     expect(DEFAULT_SYSTEM_PROMPT).toContain('## Czech copy for a small business');
     expect(DEFAULT_SYSTEM_PROMPT).toContain('Never invent an IČO');
+    expect(DEFAULT_SYSTEM_PROMPT).toContain('Shrnutí, plány a text na stránce piš česky.');
     expect(DEFAULT_SYSTEM_PROMPT).toContain('reorder_page_elements');
   });
 

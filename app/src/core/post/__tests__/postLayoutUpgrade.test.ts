@@ -19,7 +19,7 @@ const LATE_V1 = postLayoutSource(null)
   .replace(HEADER.coverWide, V1_COVER_WIDE)
   .replace(SUBTITLE_PICK, V1_SUBTITLE_PICK);
 
-describe('upgradePostLayout (v1 → v2)', () => {
+describe('upgradePostLayout (v1 → current)', () => {
   it.each([['early', EARLY_V1], ['late', LATE_V1]])('%s v1 variant → current body + cover classes, v2 marker', (_n, v1) => {
     expect(v1).toContain('sq-post-layout-v1');
     const out = upgradePostLayout(v1)!;

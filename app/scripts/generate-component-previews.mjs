@@ -1,7 +1,7 @@
 // Generates ⌘K picker preview PNGs for preview-template library components + layouts.
 // Run from app/: `npm run previews:generate`. See docs/plans/2026-07-08-cmdk-auto-previews-design.md
 import { spawn } from 'node:child_process';
-import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { chromium } from '@playwright/test';
@@ -116,6 +116,7 @@ const targets = [
     .map((n) => ({ name: n, route: isPageTemplate(n) ? 'sq-preview-page' : 'sq-preview' })),
   ...listNames('components/library/classic').map((n) => ({ name: n, route: 'sq-preview-classic', file: `classic--${n}` })),
   ...listNames('components/library/navigation').map((n) => ({ name: n, route: 'sq-preview-nav' })),
+  ...listNames('components/library/cz').map((n) => ({ name: n, route: 'sq-preview-cz' })),
   ...listNames('layouts').map((n) => ({ name: n, route: 'sq-preview-layout' })),
 ];
 
@@ -126,6 +127,7 @@ const ROUTES = {
   'sq-preview-layout': layoutRoute,
   'sq-preview-classic': folderRoute('classic'),
   'sq-preview-nav': folderRoute('navigation'),
+  'sq-preview-cz': folderRoute('cz'),
 };
 for (const [dir, content] of Object.entries(ROUTES)) {
   mkdirSync(join(PAGES, dir), { recursive: true });
@@ -143,7 +145,8 @@ let browser;
 const skipped = [];
 try {
   const base = await waitForServer(server);
-  browser = await chromium.launch();
+  const chrome = '/opt/google/chrome/chrome';
+  browser = await chromium.launch(existsSync(chrome) ? { executablePath: chrome } : {});
   const page = await browser.newPage({
     viewport: { width: 1280, height: 720 },
     deviceScaleFactor: 0.5,

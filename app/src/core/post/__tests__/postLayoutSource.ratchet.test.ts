@@ -14,6 +14,6 @@ describe('PostLayout marker ratchet', () => {
     // both shapes the scaffold writes: standalone and wrapping a site layout
     const out = postLayoutSource(null) + postLayoutSource({ name: 'Layout', importPath: '../layouts/Layout.astro' });
     const sha = createHash('sha256').update(out).digest('hex').slice(0, 16);
-    expect({ marker: POST_LAYOUT_MARKER, sha }).toEqual({ marker: 'sq-post-layout-v2', sha: '883ee63c7824e08b' });
+    expect({ marker: POST_LAYOUT_MARKER, sha }).toEqual({ marker: 'sq-post-layout-v3', sha: '5b6121d91bbab720' });
   });
 });

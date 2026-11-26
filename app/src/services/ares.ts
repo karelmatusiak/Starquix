@@ -2,6 +2,33 @@
 // Access-Control-Allow-Origin: *, so the editor can call it from the renderer.
 // https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/{ico}
 
+export type DayId = 'Mo' | 'Tu' | 'We' | 'Th' | 'Fr' | 'Sa' | 'Su';
+
+export interface DayHours {
+  id: DayId;
+  open: string;
+  close: string;
+  closed: boolean;
+}
+
+export const DAY_LABEL: Record<DayId, string> = {
+  Mo: 'Pondělí', Tu: 'Úterý', We: 'Středa', Th: 'Čtvrtek', Fr: 'Pátek', Sa: 'Sobota', Su: 'Neděle',
+};
+
+const DAY_SHORT: Record<DayId, string> = {
+  Mo: 'Po', Tu: 'Út', We: 'St', Th: 'Čt', Fr: 'Pá', Sa: 'So', Su: 'Ne',
+};
+
+export const DEFAULT_HOURS: DayHours[] = [
+  { id: 'Mo', open: '08:00', close: '17:00', closed: false },
+  { id: 'Tu', open: '08:00', close: '17:00', closed: false },
+  { id: 'We', open: '08:00', close: '17:00', closed: false },
+  { id: 'Th', open: '08:00', close: '17:00', closed: false },
+  { id: 'Fr', open: '08:00', close: '17:00', closed: false },
+  { id: 'Sa', open: '09:00', close: '12:00', closed: false },
+  { id: 'Su', open: '', close: '', closed: true },
+];
+
 export interface Firma {
   ico: string;
   nazev: string;
@@ -9,8 +36,54 @@ export interface Firma {
   adresa: string;
   telefon: string;
   email: string;
-  openingHours: string;
+  website: string;
+  hours: DayHours[];
   cookies: boolean;
+}
+
+function clock(value: string): string {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+  if (!match) return '';
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour > 23 || minute > 59) return '';
+  return `${String(hour).padStart(2, '0')}:${match[2]}`;
+}
+
+function shownClock(value: string): string {
+  return value.replace(/^0(\d)/, '$1');
+}
+
+/** Schema.org openingHours, one entry per open day. Closed days are omitted. */
+export function schemaHours(hours: DayHours[]): string[] {
+  return hours.flatMap((day) => {
+    const open = clock(day.open);
+    const close = clock(day.close);
+    return day.closed || !open || !close ? [] : [`${day.id} ${open}-${close}`];
+  });
+}
+
+/** A short Czech line, grouping days that share the same hours. */
+export function hoursSummary(hours: DayHours[]): string {
+  const groups: Array<{ from: DayId; to: DayId; text: string }> = [];
+  for (const day of hours) {
+    const open = clock(day.open);
+    const close = clock(day.close);
+    const text = day.closed || !open || !close ? 'zavřeno' : `${shownClock(open)}–${shownClock(close)}`;
+    const last = groups[groups.length - 1];
+    if (last && last.text === text) last.to = day.id;
+    else groups.push({ from: day.id, to: day.id, text });
+  }
+  return groups
+    .filter((group) => group.text !== 'zavřeno')
+    .map((group) => `${group.from === group.to ? DAY_SHORT[group.from] : `${DAY_SHORT[group.from]}–${DAY_SHORT[group.to]}`} ${group.text}`)
+    .join(', ');
+}
+
+function dayText(day: DayHours): string {
+  const open = clock(day.open);
+  const close = clock(day.close);
+  return day.closed || !open || !close ? 'zavřeno' : `${shownClock(open)}–${shownClock(close)}`;
 }
 
 export type AresFailure = 'invalid' | 'not-found' | 'offline';
@@ -88,12 +161,13 @@ export async function fetchAres(raw: string, fetchImpl: typeof fetch = fetch): P
     adresa: addressOf(body.sidlo),
     telefon: '',
     email: '',
-    openingHours: 'Mo-Fr 08:00-17:00',
+    website: '',
+    hours: DEFAULT_HOURS.map((day) => ({ ...day })),
     cookies: false,
   };
 }
 
-const MARKERS = ['nazev', 'ico', 'dic', 'adresa', 'email', 'telefon'] as const;
+const MARKERS = ['nazev', 'ico', 'dic', 'adresa'] as const;
 
 function escapeText(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -108,9 +182,23 @@ export function fillFirmaMarkers(source: string, firma: Firma): string {
     const re = new RegExp(`(<[a-zA-Z0-9]+\\b[^>]*data-sq-firma=["']${key}["'][^>]*>)[\\s\\S]*?(</[a-zA-Z0-9]+>)`);
     out = out.replace(re, `$1${escapeText(value)}$2`);
   }
-  if (firma.email) {
-    out = out.replace(/(<a\b[^>]*data-sq-firma=["']email["'][^>]*href=["'])mailto:[^"']*(["'])/, `$1mailto:${firma.email}$2`);
+  for (const key of ['telefon', 'email', 'website'] as const) {
+    const value = key === 'website' ? firma.website.replace(/^https?:\/\//, '') : firma[key];
+    out = out.replace(new RegExp(`(<[a-zA-Z0-9]+\\b[^>]*data-sq-firma=["']${key}["'][^>]*>)[\\s\\S]*?(</[a-zA-Z0-9]+>)`), `$1${escapeText(value)}$2`);
   }
+  out = out.replace(/(<a\b[^>]*data-sq-firma=["']email["'][^>]*href=["'])mailto:[^"']*(["'])/, `$1mailto:${firma.email}$2`);
+  const phoneHref = firma.telefon.replace(/[^\d+]/g, '');
+  out = out.replace(/(<a\b[^>]*data-sq-firma=["']telefon["'][^>]*href=["'])tel:[^"']*(["'])/, `$1tel:${phoneHref}$2`);
+  const site = /^https?:\/\//.test(firma.website) ? firma.website : (firma.website ? `https://${firma.website}` : '');
+  out = out.replace(/(<a\b[^>]*data-sq-firma=["']website["'][^>]*href=["'])[^"']*(["'])/, `$1${site}$2`);
+  for (const day of firma.hours) {
+    out = out.replace(
+      new RegExp(`(<[a-zA-Z0-9]+\\b[^>]*data-sq-day=["']${day.id}["'][^>]*>[\\s\\S]*?<dd\\b[^>]*>)[\\s\\S]*?(</dd>)`),
+      `$1${escapeText(dayText(day))}$2`,
+    );
+  }
+  const summary = hoursSummary(firma.hours);
+  out = out.replace(/(<[a-zA-Z0-9]+\b[^>]*data-sq-firma=["']openingHours["'][^>]*>)[\s\S]*?(<\/[a-zA-Z0-9]+>)/, `$1${escapeText(summary)}$2`);
   if (firma.adresa) {
     const href = `https://mapy.cz/zakladni?q=${encodeURIComponent(firma.adresa)}`;
     out = out.replace(/(<a\b[^>]*data-sq-firma=["']mapa["'][^>]*href=["'])[^"']*(["'])/, `$1${href}$2`);
@@ -122,48 +210,13 @@ export function fillFirmaMarkers(source: string, firma: Firma): string {
       '@type': 'LocalBusiness',
       name: firma.nazev,
       taxID: firma.dic,
+      url: site,
       telephone: firma.telefon,
       email: firma.email,
       address: { '@type': 'PostalAddress', streetAddress: firma.adresa, addressCountry: 'CZ' },
-      openingHours: firma.openingHours,
+      openingHours: schemaHours(firma.hours),
     };
     return `${open}${JSON.stringify(data, null, 2)}${close}`;
   });
   return out;
 }
-
-/** Cloudflare Pages Function. Honeypot always; Turnstile when TURNSTILE_SECRET is set; delivery via CONTACT_WEBHOOK. */
-export const CONTACT_FUNCTION = `// Generated by Webdílna. Cloudflare Pages runs functions/api/kontakt.js.
-// Set CONTACT_WEBHOOK to a URL that accepts JSON { name, email, message }.
-// Set TURNSTILE_SECRET (and the site key on the form) to require Turnstile.
-export async function onRequestPost({ request, env }) {
-  const form = await request.formData();
-  if (String(form.get('website') || '').trim()) return Response.json({ ok: true });
-  const name = String(form.get('jmeno') || '').trim();
-  const email = String(form.get('email') || '').trim();
-  const message = String(form.get('zprava') || '').trim();
-  if (!name || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || !message || message.length > 5000) {
-    return Response.json({ ok: false, error: 'Neplatná zpráva' }, { status: 400 });
-  }
-  if (env.TURNSTILE_SECRET) {
-    const token = String(form.get('cf-turnstile-response') || '');
-    const check = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ secret: env.TURNSTILE_SECRET, response: token }),
-    });
-    const verdict = await check.json();
-    if (!verdict.success) return Response.json({ ok: false, error: 'Ověření selhalo' }, { status: 400 });
-  }
-  if (!env.CONTACT_WEBHOOK) {
-    return Response.json({ ok: false, error: 'Nastavte CONTACT_WEBHOOK v projektu na Cloudflare.' }, { status: 501 });
-  }
-  const sent = await fetch(env.CONTACT_WEBHOOK, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ name, email, message, at: new Date().toISOString() }),
-  });
-  if (!sent.ok) return Response.json({ ok: false, error: 'Odeslání se nezdařilo' }, { status: 502 });
-  return Response.json({ ok: true });
-}
-`;

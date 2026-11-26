@@ -5,10 +5,18 @@ import { commitAuthor } from './auth.mjs';
 import { parseRemote } from './github.mjs';
 import { lfs, partition } from './into.mjs';
 import { deploysPages, ownPagesWorkflow, PAGES_WORKFLOW, pagesFilesCurrent, writePagesFiles } from './pages.mjs';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { freeName, pageHash, siteSlug } from '../cloudflare.mjs';
+import { sanitizeKontakt } from '../../../app/src/services/kontaktWorker.mjs';
 import { t } from '../i18n.mjs';
 
 const fail = (code, message, extra) => Object.assign(new Error(t(message)), { code }, extra);
+/** Settings saved by the editor. Missing or unreadable → the form answers that it is not set up. */
+function kontaktConfig(dir) {
+  try { return sanitizeKontakt(JSON.parse(readFileSync(join(dir, 'src/data/kontakt.json'), 'utf8'))); }
+  catch { return sanitizeKontakt(null); }
+}
 const str = (v, name, max = 200) => {
   if (typeof v !== 'string' || !v.trim() || v.length > max) throw fail('invalid', `Invalid ${name}`);
   return v.trim();
@@ -355,7 +363,7 @@ const OPS = {
     const shows = site || live;
     return { ...report, liveUrl, liveBranch: shows, defaultBranch: live, siteBlocked: !!rule && !deploys(rule, shows, live) };
   },
-  /** Cloudflare, one click (C1/C2/C6): save the edits as a version, build locally, upload the assets-only Worker. */
+  /** Cloudflare, one click (C1/C2/C6): save the edits as a version, build locally, upload the Worker (assets + /api/kontakt). */
   async cloudflarePublish(ctx, engine, a) {
     const name = str(a.name, 'site name', 1000); const message = str(a.message, 'message');
     const cf = ctx.cloudflare; const account = await signedInAccount(cf);
@@ -363,7 +371,7 @@ const OPS = {
     const files = await ctx.build(engine.dir); // build-failed / not-static / file-too-big: nothing uploaded (21–24)
     const { worker, there, tag, confirmed } = await cloudflareWorker(cf, engine, account, name);
     await engine.setConfig(HOST, 'cloudflare');
-    const uploaded = await cf.upload(account.id, worker, files);
+    const uploaded = await cf.upload(account.id, worker, files, kontaktConfig(engine.dir));
     if (!confirmed) { // a new, recreated or adopted Worker gets its workers.dev address; an existing one keeps the user's setting
       if (!(await cached(ctx, `cf-sub:${account.id}`, () => cf.subdomain(account.id)))) await cf.createSubdomain(account.id, siteSlug(name)); // 19
       await cf.enableWorkersDev(account.id, worker);

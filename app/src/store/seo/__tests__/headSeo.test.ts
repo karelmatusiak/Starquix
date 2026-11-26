@@ -247,7 +247,12 @@ describe('rows 7/9/10/17 — edges', () => {
     const S = { 'src/pages/x.astro': P, 'src/components/Hero.astro': '<div/>' };
     expect(readPageSeo(S, 'src/pages/x.astro').headFile).toBeNull();
     const out = editPageSeo(S, 'src/pages/x.astro', 'title', 'X');
-    expect(out['src/pages/x.astro']).toMatch(/^---[\s\S]*---\n<html lang="en">\n  <head>[\s\S]*<title>X<\/title>\n  <\/head>\n  <body>\n<Hero \/>\n<section>Hi<\/section>\n  <\/body>\n<\/html>\n$/);
+    expect(out['src/pages/x.astro']).toMatch(/^---[\s\S]*---\n<html lang="cs">\n  <head>[\s\S]*<title>X<\/title>\n  <\/head>\n  <body>\n<Hero \/>\n<section>Hi<\/section>\n  <\/body>\n<\/html>\n$/);
+  });
+  it('a fragment page keeps the language already used in the project', () => {
+    const P = `---\n---\n<section>Hi</section>\n`;
+    const out = editPageSeo({ 'src/pages/x.astro': P, 'src/pages/index.astro': '<html lang="de"><head></head><body></body></html>' }, 'src/pages/x.astro', 'title', 'X');
+    expect(out['src/pages/x.astro']).toContain('<html lang="de">');
   });
   it('a wrapper we cannot locate makes the fields read-only (never wraps a layout page)', () => {
     const P = `---\nimport L from 'some-package/Layout.astro';\n---\n<L title="x"><p/></L>`;

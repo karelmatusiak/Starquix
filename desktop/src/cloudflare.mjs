@@ -3,6 +3,7 @@
 // rest by the injected `crypto` (Electron safeStorage) and never leave main. No retries but one refresh on a 401.
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
+import { contactWorkerSource } from '../../app/src/services/kontaktWorker.mjs';
 import { abortSafe } from './abort-safe.mjs';
 import { t } from './i18n.mjs';
 
@@ -21,7 +22,7 @@ const OAUTH = 'https://dash.cloudflare.com/oauth2';
 const EARLY_MS = 60_000; // ledger 7: refresh a minute before expiry
 const GET_MS = 30_000; // a hung read must not hold the project's op lane (the poll is a GET)
 const fail = (code, message, extra) => Object.assign(new Error(t(message)), { code }, extra);
-// Assets-only Worker (wrangler's "static assets upload only" metadata); Astro's 404.html answers unknown paths.
+// Static assets plus a module: Astro's 404.html answers unknown pages, and the module answers POST /api/kontakt.
 const ASSET_CONFIG = { html_handling: 'auto-trailing-slash', not_found_handling: '404-page' };
 const COMPATIBILITY_DATE = '2026-09-01';
 const seg = v => encodeURIComponent(v);
@@ -154,8 +155,8 @@ export function createCloudflare({ fetch: rawFetch = globalThis.fetch, store, cr
   }
   // ── Workers static assets (C2) ──
   const scripts = async a => ((await call(`/accounts/${seg(a)}/workers/scripts`)).body.result ?? []).map(w => ({ name: w.id, tag: w.tag }));
-  /** files: [{ path: '/index.html', bytes, type }] → manifest → buckets (upload jwt) → the assets-only Worker; returns its tag. */
-  async function upload(a, name, files) {
+  /** files: [{ path: '/index.html', bytes, type }] → manifest → buckets (upload jwt) → Worker with assets + /api/kontakt. */
+  async function upload(a, name, files, contact = null) {
     const byHash = new Map(); const manifest = {};
     const base64 = f => Buffer.from(f.bytes).toString('base64'); // per bucket, never the whole site at once
     for (const f of files) {
@@ -172,7 +173,13 @@ export function createCloudflare({ fetch: rawFetch = globalThis.fetch, store, cr
     }
     if (!done) throw fail('cloudflare', 'Cloudflare did not complete the upload');
     const form = new FormData();
-    form.set('metadata', JSON.stringify({ assets: { jwt: done, config: ASSET_CONFIG }, compatibility_date: COMPATIBILITY_DATE }));
+    form.set('metadata', JSON.stringify({
+      main_module: 'worker.js',
+      assets: { jwt: done, config: ASSET_CONFIG },
+      bindings: [{ type: 'assets', name: 'ASSETS' }],
+      compatibility_date: COMPATIBILITY_DATE,
+    }));
+    form.set('worker.js', new File([contactWorkerSource(contact)], 'worker.js', { type: 'application/javascript+module' }));
     return (await call(`/accounts/${seg(a)}/workers/scripts/${seg(name)}`, { method: 'PUT', body: form })).body.result?.tag ?? null;
   }
   const enableWorkersDev = (a, name) => call(`/accounts/${seg(a)}/workers/scripts/${seg(name)}/subdomain`, send('POST', { enabled: true, previews_enabled: false }));

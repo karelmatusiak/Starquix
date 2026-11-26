@@ -12,6 +12,7 @@
       <p class='m-0' data-sq-firma='adresa'>Náměstí 1, 110 00 Praha</p>
       <p class='m-0 mt-2'><a data-sq-firma='telefon' href='tel:+420777000000'>+420 777 000 000</a></p>
       <p class='m-0 mt-2'><a data-sq-firma='email' href='mailto:ahoj@example.cz'>ahoj@example.cz</a></p>
+      <p class='m-0 mt-2'><a data-sq-firma='website' href='https://example.cz'>example.cz</a></p>
       <p class='m-0 mt-4'><a data-sq-firma='mapa' href='https://mapy.cz/zakladni?q=Praha'>Ukázat na mapě</a></p>
       <iframe title='Mapa' class='mt-4 h-64 w-full rounded-lg border-0' src='https://www.openstreetmap.org/export/embed.html?bbox=14.40%2C50.05%2C14.50%2C50.12&amp;layer=mapnik'></iframe>
     </div>
@@ -25,6 +26,7 @@
       <label class='font-sans text-sm text-stone-600 dark:text-stone-400'>Zpráva
         <textarea class='mt-1 w-full rounded-lg border border-solid border-stone-300 bg-white px-3 py-2 text-base text-stone-900' name='zprava' rows='4' required></textarea>
       </label>
+      <div data-sq-turnstile=''></div>
       <input class='absolute -left-[9999px]' name='website' tabindex='-1' autocomplete='off' aria-hidden='true' />
       <button class='inline-flex min-h-12 items-center justify-center rounded-lg bg-yellow-400 px-6 font-sans text-base font-semibold text-stone-900' type='submit'>Odeslat</button>
       <p class='m-0 font-sans text-sm text-stone-500' data-sq-contact-status></p>
@@ -32,22 +34,31 @@
   </div>
   <script>
     const form = document.querySelector('[data-sq-contact]');
+    const turnstile = form?.querySelector('[data-sq-turnstile]');
+    const siteKey = turnstile?.getAttribute('data-sq-turnstile');
+    if (turnstile && siteKey) {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      script.async = true;
+      document.head.appendChild(script);
+      turnstile.innerHTML = `<div class="cf-turnstile" data-sitekey="${siteKey}"></div>`;
+    }
     const status = document.querySelector('[data-sq-contact-status]');
     form?.addEventListener('submit', async (event) => {
       event.preventDefault();
       const data = new FormData(form);
       if (String(data.get('website') || '').trim()) return;
+      let body = {};
       try {
         const response = await fetch('/api/kontakt', { method: 'POST', body: data });
-        const body = await response.json().catch(() => ({}));
+        body = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(body.error || '');
         form.reset();
         if (status) status.textContent = 'Děkujeme, ozveme se.';
       } catch (error) {
-        const email = document.querySelector('[data-sq-firma="email"]')?.textContent || '';
-        if (status) status.textContent = email
-          ? `Teď to nešlo odeslat. Napište na ${email}.`
-          : 'Teď to nešlo odeslat. Zkuste to prosím později.';
+        const email = String(body.email || document.querySelector('[data-sq-firma="email"]')?.textContent || '').trim();
+        const reason = error instanceof Error && error.message ? error.message : 'Teď to nešlo odeslat.';
+        if (status) status.textContent = email ? `${reason} Napište na ${email}.` : reason;
       }
     });
   </script>

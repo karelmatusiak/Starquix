@@ -37,7 +37,7 @@
     <li>Když registrátor hlásí, že nameservery ještě nevidí, nic ve Webdílně znovu neplňte. Počkejte a zkuste připojení znovu.</li>
   </ol>
   <h2>Kontaktní formulář</h2>
-  <p>Jedním kliknutím se nahraje statický Worker. Soubor <code>functions/api/kontakt.js</code> běží až na Cloudflare Pages, a jen když v projektu nastavíte <code>CONTACT_WEBHOOK</code> na adresu, která přijme JSON se jménem, e-mailem a zprávou. Volitelně <code>TURNSTILE_SECRET</code> a site key ve formuláři. Než to nastavíte, formulář na webu nabídne e-mail z patičky.</p>
+  <p>Tlačítko Formulář u stránek uloží, kam mají zprávy chodit. Publikace na Cloudflare nahraje web a k němu obsluhu <code>/api/kontakt</code>. Webhook je adresa https, která přijme JSON se jménem, e-mailem, zprávou a polem <code>to</code> — to je e-mail, na který má služba zprávu přeposlat. Než webhook uložíte, formulář návštěvníkovi řekne, ať napíše na ten e-mail. Volitelně přidejte klíče Turnstile. Po změně nastavení web znovu publikujte.</p>
   <p><a href="/help.html">Zpět do nápovědy</a></p>
 </main>
 </body>

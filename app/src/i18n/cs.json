@@ -1603,5 +1603,21 @@
   "Shorten the title to 60 characters": "Zkraťte titulek na 60 znaků",
   "Show the cookie bar": "Zobrazit lištu souhlasu s cookies",
   "The company was loaded, but the project files could not be written. Open the project in the desktop app and try again.": "Firmu se podařilo načíst, ale soubory projektu nešly zapsat. Otevřete projekt v desktopové aplikaci a zkuste to znovu.",
-  "The contact form is at functions/api/kontakt.js. It sends mail only after you set CONTACT_WEBHOOK on Cloudflare Pages.": "Kontaktní formulář je v souboru functions/api/kontakt.js. E-mail odejde, až na Cloudflare Pages nastavíte CONTACT_WEBHOOK."
+  "The contact form is at functions/api/kontakt.js. It sends mail only after you set CONTACT_WEBHOOK on Cloudflare Pages.": "Kontaktní formulář je v souboru functions/api/kontakt.js. E-mail odejde, až na Cloudflare Pages nastavíte CONTACT_WEBHOOK.",
+  "Form": "Formulář",
+  "Contact form": "Kontaktní formulář",
+  "Webhook": "Webhook",
+  "An https address that accepts JSON with name, email, message and to. That is how the message becomes an email.": "Adresa https, která přijme JSON se jménem, e-mailem, zprávou a polem to. Takhle se ze zprávy stane e-mail.",
+  "Who should receive it (the to field), and the address a visitor sees when sending is not set up.": "Komu má zpráva přijít (pole to) a jakou adresu návštěvník uvidí, když odeslání není nastavené.",
+  "Turnstile site key": "Site key Turnstile",
+  "Optional. Leave both Turnstile fields empty to keep only the honeypot.": "Volitelné. Když obě pole Turnstile necháte prázdná, zůstane jen past na roboty.",
+  "Turnstile secret": "Tajný klíč Turnstile",
+  "Stored in the project and copied into the Worker on publish. It is not part of the public site.": "Je v projektu a při publikaci se vloží do Workeru. Na veřejný web se nedostane.",
+  "The form settings could not be written. Open the project in the desktop app and try again.": "Nastavení formuláře nešlo zapsat. Otevřete projekt v desktopové aplikaci a zkuste to znovu.",
+  "Until a webhook is saved, the form tells the visitor to write to the email above.": "Než uložíte webhook, formulář návštěvníkovi řekne, ať napíše na e-mail výše.",
+  "Saved. Publish again so the live site uses it.": "Uloženo. Znovu publikujte, ať to živý web použije.",
+  "Phone": "Telefon",
+  "Email": "E-mail",
+  "Website": "Web",
+  "Company details are in the footer. Publish again so the live site picks them up.": "Údaje firmy jsou v patičce. Znovu publikujte, ať je živý web převezme."
 }
